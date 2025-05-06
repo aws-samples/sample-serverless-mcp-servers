@@ -8,11 +8,11 @@ This repo contains a collection of sample implementations of MCP Servers.
 
 ## Stateful VS Stateless MCP Servers
 
-When using [Streamable HTTP Transport]((https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http)) with MCP Servers/Clients, it’s important to understand the difference and trade-offs between stateful and stateless MCP server implementations. Each model has implications for scalability, connection handling, and session management.
+When using [Streamable HTTP Transport](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http) with MCP Servers/Clients, it’s important to understand the difference and trade-offs between stateful and stateless MCP server implementations. Each model has implications for scalability, connection handling, and session management.
 
 #### Key Aspects
 
-The Streamable HTTP Transport specification outlines two important capabilities. First, a client may initiate a long-lived HTTP GET request to establish a persistent SSE (Server-Sent Events) connection, allowing the server to push data even when the client hasn’t sent a POST request. Second, if the connection is interrupted, the client should be able to resume communication by reconnecting through another GET request. Both features imply that the server must be able to maintain a persistent session context and support long-lived connections.
+The [Streamable HTTP Transport](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http) specification outlines two important capabilities. First, a client may initiate a long-lived HTTP GET request to establish a persistent SSE (Server-Sent Events) connection, allowing the server to push data even when the client hasn’t sent a POST request. Second, if the connection is interrupted, the client should be able to resume communication by reconnecting through another GET request. Both features imply that the server must be able to maintain a persistent session context and support long-lived connections. Read more about Streamable HTTP Transport session management [here](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#session-management).
 
 #### Stateful model challenges
 
