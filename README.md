@@ -1,15 +1,12 @@
-## My Project
+# Sample Serverless MCP Servers
 
-TODO: Fill this README out!
+This repo contains a collection of sample implementations of MCP Servers.  
 
-Be sure to:
+* stateless-mcp-on-lambda
+* stateless-mcp-on-ecs
+* stateful-mcp-on-ecs
 
-* Change the title in this README
-* Edit your repository description on GitHub
-
-## Security
-
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+Refer to each folder separately for deployment instructions. 
 
 ## License
 

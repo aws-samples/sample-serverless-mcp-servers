@@ -1,0 +1,12 @@
+{
+  "type": "module",
+  "version": "0.0.10",
+  "author": "Anton Aleksandrov",
+  "license": "Apache-2.0",
+  "description": "A sample stateful MCP Server running on ECS Fargate",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.11.0",
+    "express": "^5.1.0",
+    "log4js": "^6.9.1"
+  }
+}
