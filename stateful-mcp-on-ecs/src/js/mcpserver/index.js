@@ -19,7 +19,7 @@ app.get('/health', (req, res) => {
 app.use(async (req, res, next) => {
     l.debug(`> ${req.method} ${req.originalUrl}`);
     l.debug(req.body);
-    l.debug(req.headers);
+    // l.debug(req.headers);
     return next();
 });
 
