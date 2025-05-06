@@ -19,7 +19,7 @@ resource "aws_cloudwatch_log_group" "mcp_server" {
 
 
 resource "aws_iam_role" "ecs_task_role" {
-  name = "ecs_task_role"
+  name = local.project_name
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
