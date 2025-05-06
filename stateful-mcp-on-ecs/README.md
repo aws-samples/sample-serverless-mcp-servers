@@ -47,6 +47,10 @@ Update `publish-to-ecr.sh` with your ECR alias, and run the script to build and 
 
 ### Deploy to AWS with Terraform
 
+Update `terraform/locals.tf` with your ECR alias. Optionally, update region, VPC configuraion, and Route53 Zone Name if you have a DNS name registered to use for SSL certificate (see HTTPS considerations below for details). 
+
+Run below commands to deploy the sample to AWS
+
 ```bash
 cd terraform
 terraform init
