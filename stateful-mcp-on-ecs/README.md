@@ -31,7 +31,7 @@ cd sample-serverless-mcp-servers/stateful-mcp-on-ecs
 node src/js/mcpserver/index.js
 ```
 
-once the server is running, run in a separate terminal window
+Once the server is running, run client in a separate terminal window
 
 ```bash
 node src/js/mcpclient/index.js
@@ -56,7 +56,7 @@ export MCP_SERVER_ENDPOINT=$(terraform output --raw mcp_endpoint)
 cd ..
 ```
 
-Deployment takes 3-4 minutes. Once Tarraform deployment has completed, it will take 2-3 more minutes for ECS tasks to spin up and get recognized by the ALB target group.
+Deployment takes 3-4 minutes. Once Terraform deployment has completed, it will take 2-3 more minutes for ECS tasks to spin up and get recognized by the ALB target group.
 
 ### Test your remote MCP Server with MCP client:
 ```bash
@@ -93,17 +93,15 @@ Stateful mode implies a persistent SSE connection established between MCP Client
 
 As of building this sample (early May 2025), the TypeScript implementation of MCP Server SDK does not support externalizing session info, meaning session cannot be synchronized across different server instances. 
 
-It is possible to address this concern by using ALB with cookie-based sticky sessions, which will insure that requests for a session established with a particular task will always be forwarded to the same task. However, MCP Client SDK does not support cookies by default. To address this concern, this sample is injecting cookie support into `fetch`, the framework MCP Client uses under-the-hood for HTTP communications. 
+It is possible to address this concern by using ALB with cookie-based sticky sessions, which will insure that requests for a session established with a particular task will always be forwarded to the same task. However, MCP Client SDK does not support cookies by default. To address this concern, this sample injects cookie support into `fetch`, the framework MCP Client uses under-the-hood for HTTP communications (see `src/js/mcpclient/index.js`)
 
-See more info about this in 
-* src/js/mcpclient/index.js
-* terraform/ecs.tf
+See more info about this in `terraform/ecs.tf`
 
 ## HTTPS considerations
 
 By default, this sample uses the default ALB endpoint, which is HTTP only. See a comment in terraform/alb.tf for instructions how to enable HTTPS. 
 
-Only use HTTP for testing purposes!!! Never expose ANYTHING via plain HTTP, use HTTPS only!!!
+Only use HTTP for testing purposes ONLY!!! NEVER expose ANYTHING via plain HTTP, always use HTTPS!!!
 
 ## Cost considerations
 
