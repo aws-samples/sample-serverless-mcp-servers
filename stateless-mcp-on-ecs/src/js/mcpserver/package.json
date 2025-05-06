@@ -3,7 +3,7 @@
   "version": "0.0.12",
   "author": "Anton Aleksandrov",
   "license": "Apache-2.0",
-  "description": "A sample stateful MCP Server running on ECS Fargate",
+  "description": "A sample stateless MCP Server running on ECS Fargate",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.11.0",
     "express": "^5.1.0",
