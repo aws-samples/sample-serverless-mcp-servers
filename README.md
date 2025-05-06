@@ -1,5 +1,7 @@
 # Sample Serverless MCP Servers
 
+![](logo.png)
+
 This repo contains a collection of sample implementations of MCP Servers.  
 
 * stateless-mcp-on-lambda
