@@ -1,0 +1,10 @@
+{
+  "type": "module",
+  "author": "Anton Aleksandrov",
+  "license": "Apache-2.0",
+  "description": "A simple MCP Client",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.11.0",
+    "fetch-cookie": "^3.1.0"
+  }
+}
