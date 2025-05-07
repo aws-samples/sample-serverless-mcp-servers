@@ -1,0 +1,17 @@
+{
+    "name": "sample-mcp-server",
+    "type": "module",
+    "version": "0.0.1",
+    "keywords": [],
+    "author": "Anton Aleksandrov",
+    "license": "Apache-2.0",
+    "description": "A sample MCP Server",
+    "dependencies": {
+        "@aws-sdk/client-lambda": "^3.787.0",
+        "@modelcontextprotocol/sdk": "^1.11.0",
+        "express": "^5.1.0",
+        "jquery": "^3.7.1",
+        "jsdom": "^26.1.0",
+        "log4js": "^6.9.1"
+    }
+}
