@@ -4,9 +4,10 @@
 
 This repo contains a collection of sample implementations of MCP Servers.  
 
-* stateless-mcp-on-lambda
-* stateless-mcp-on-ecs
-* stateful-mcp-on-ecs
+* **stateless-mcp-on-lambda** - A sample implementation of a remote stateless MCP Server running natively on AWS Lambda and Amazon API Gateway.
+* **stateless-mcp-on-ecs** - A sample implementation of a remote stateless MCP Server running natively on Amazon ECS with Application Load Balancer.
+* **stateful-mcp-on-ecs** - A sample implementation of a remote stateful MCP Server running natively on Amazon ECS with Application Load Balancer.
+* **lambda-ops-mcp-server** - A sample implementation of a local MCP Server that can be used for discovering and upgrading functions on deprecated runtimes.
 
 ## Stateful VS Stateless MCP Servers
 
