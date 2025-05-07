@@ -2,7 +2,7 @@
 
 This sample demonstrates how to build an MCP Server to support AWS Lambda function operations. Specifically, it showcases the discovery of Lambda functions running on deprecated or soon-to-be-deprecated runtimes and provides a workflow for upgrading them to a supported runtime version. The implementation can be extended to support additional operational scenarios based on your environment's requirements.
 
-Use this MCP Server for sample and education purposes only. DO NOT USE IT FOR PRODUCTION ENVIRONMENTS. 
+IMPORTANT: Use this MCP Server for sample and education purposes only. THIS TOOL MAKES CHANGES TO FUNCTIONS IN YOUR ACCOUNT. DO NOT USE IT FOR YOUR PRODUCTION ENVIRONMENTS. 
 
 ## Demo
 
