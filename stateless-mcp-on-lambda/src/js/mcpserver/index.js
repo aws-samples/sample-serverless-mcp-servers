@@ -3,13 +3,14 @@ import log4js from 'log4js';
 import express from 'express';
 import metadata from './metadata.js';
 import transport from './transport.js';
-import serverlessExpress from '@codegenie/serverless-express';
 
 await metadata.init();
 
 const l = log4js.getLogger();
 const PORT = 3000;
 
+// This function is using Lambda Web Adapter to run express.js on Lambda
+// https://github.com/awslabs/aws-lambda-web-adapter
 const app = express();
 app.use(express.json());
 
@@ -26,10 +27,10 @@ app.use(async (req, res, next) => {
 
 await transport.bootstrap(app); 
 
-// Uncomment if you want to test locally
 app.listen(PORT, () => {
     l.debug(metadata.all);
     l.debug(`listening on http://localhost:${PORT}`);
 });
 
-export const handler = serverlessExpress({ app });
+
+

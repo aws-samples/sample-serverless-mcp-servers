@@ -30,9 +30,18 @@ resource "aws_lambda_function" "mcp_server" {
   filename         = data.archive_file.mcp_server.output_path
   source_code_hash = data.archive_file.mcp_server.output_base64sha256
   role             = aws_iam_role.mcp_server.arn
-  handler          = "index.handler"
+  handler          = "run.sh"
   runtime          = "nodejs22.x"
   memory_size      = 512
   timeout          = 10
+  layers = [
+    "arn:aws:lambda:${local.region}:753240598075:layer:LambdaAdapterLayerX86:25"
+  ]
+  environment {
+    variables = {
+      AWS_LWA_PORT = "3000"
+      AWS_LAMBDA_EXEC_WRAPPER = "/opt/bootstrap"
+    }
+  }
 }
 

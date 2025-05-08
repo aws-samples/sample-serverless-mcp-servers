@@ -5,7 +5,6 @@
   "license": "Apache-2.0",
   "description": "A sample stateless MCP Server running on AWS Lambda",
   "dependencies": {
-    "@codegenie/serverless-express": "^4.16.0",
     "@modelcontextprotocol/sdk": "^1.11.0",
     "express": "^5.1.0",
     "log4js": "^6.9.1"
