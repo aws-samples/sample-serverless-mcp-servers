@@ -1,8 +1,9 @@
 resource "aws_lb" "mcp_server" {
-  name               = local.project_name
-  internal           = false
-  load_balancer_type = "application"
-  subnets            = [aws_subnet.public1.id, aws_subnet.public2.id]
+  name                       = local.project_name
+  internal                   = false
+  load_balancer_type         = "application"
+  subnets                    = [aws_subnet.public1.id, aws_subnet.public2.id]
+  drop_invalid_header_fields = true
 }
 
 resource "aws_lb_target_group" "mcp_server" {
@@ -14,8 +15,8 @@ resource "aws_lb_target_group" "mcp_server" {
   deregistration_delay = 60
 
   stickiness {
-    enabled = true
-    type    = "lb_cookie"
+    enabled         = true
+    type            = "lb_cookie"
     cookie_duration = 86400 # 1 day
   }
 

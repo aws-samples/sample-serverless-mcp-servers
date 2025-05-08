@@ -103,6 +103,8 @@ resource "aws_ecs_service" "mcp_server" {
 
   network_configuration {
     subnets          = [aws_subnet.public1.id, aws_subnet.public2.id]
+
+    # Public IP is used for demo purposes in order to pull image from the Public ECR. 
     assign_public_ip = true
   }
 
@@ -116,6 +118,6 @@ resource "aws_ecs_service" "mcp_server" {
     redeploy = plantimestamp()
   }
 
-  # depends_on = [ aws_acm_certificate_validation.cert_validation ]
+  depends_on = [ aws_iam_role.ecs_task_role ] # aws_acm_certificate_validation.cert_validation ]
 }
 
