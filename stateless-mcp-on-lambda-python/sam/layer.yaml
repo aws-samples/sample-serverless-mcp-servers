@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: MCP dependencies for Lambda
+Transform: AWS::Serverless-2016-10-31
+Parameters:
+  description:
+    Type: String
+Resources:
+  LayerMcp:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - python3.11
+        - python3.12
+      ContentUri: src/dependencies
+      Description: !Ref description
+      LayerName: mcp-dependencies-python3
+    Metadata:
+      BuildMethod: python3.12
+      BuildProperties:
+        UseContainer: true
+Outputs:
+  outLayer:
+    Value: !Ref LayerMcp

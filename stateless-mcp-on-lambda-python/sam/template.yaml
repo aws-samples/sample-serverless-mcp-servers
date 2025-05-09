@@ -1,0 +1,120 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: MCP deployment on API Gateway and Lambda
+Transform: AWS::Serverless-2016-10-31
+Globals:
+  Api:
+    OpenApiVersion: 3.0.1
+  Function:
+    Layers:
+      - arn:aws:lambda:us-east-1:580247275435:layer:LambdaInsightsExtension:55
+      - arn:aws:lambda:us-east-1:753240598075:layer:LambdaAdapterLayerX86:25
+      - !Ref dependencies
+    MemorySize: !Ref fnMemory
+    Runtime: python3.12
+    Timeout: !Ref fnTimeout
+    Tracing: Active
+Parameters:
+  apiStage:
+    Type: String
+  fnMemory:
+    Type: Number
+  fnTimeout:
+    Type: Number
+  dependencies:
+    Type: String
+Resources:
+  # APIGW
+  Api:
+    Type: AWS::Serverless::Api
+    Properties:
+      AccessLogSetting:
+        DestinationArn: !GetAtt ApiLogGroup.Arn
+        Format: '{ "requestId":"$context.requestId", "ip": "$context.identity.sourceIp", "requestTime":"$context.requestTime", "httpMethod":"$context.httpMethod","routeKey":"$context.routeKey", "status":"$context.status","protocol":"$context.protocol", "responseLength":"$context.responseLength", "auth.status":"$context.authorizer.status", "auth.error":"$context.authorizer.error", "auth.token":"$context.authorizer.token", "auth.reason":"$context.authorizer.reason", "auth.simple":"$context.authorizer.simple", "auth.pversion":"$context.authorizer.pversion" }'
+      StageName: !Ref apiStage
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: openapi.yaml
+  ApiLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/apigateway/apigw-mcp-${Api}"
+      RetentionInDays: 7
+  # Lambda
+  FnRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: cloudwatch-insights
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                Resource: '*'
+        - PolicyName: cloudwatch-logs
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - logs:DescribeLogStreams
+                Resource: 'arn:aws:logs:*:*:log-group:*:*'
+        - PolicyName: xray
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - xray:PutTraceSegments
+                  - xray:PutTelemetryRecords
+                  - xray:GetSamplingRules
+                  - xray:GetSamplingTargets
+                  - xray:GetSamplingStatisticSummaries
+                Resource: '*'
+  Fn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../src/mcpserver
+      Handler: run.sh
+      Role: !GetAtt FnRole.Arn
+      Environment:
+        Variables:
+          AWS_LAMBDA_EXEC_WRAPPER: /opt/bootstrap
+          PORT: 8000
+      Tags:
+        application:group: example_group
+        application:owner: example_owner
+  FnLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${Fn}'
+      RetentionInDays: 7
+  FnPerm:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt Fn.Arn
+      Principal: apigateway.amazonaws.com
+      Action: lambda:InvokeFunction
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${Api}/*/*/*'
+Outputs:
+  outApi:
+    Value: !Ref Api
+  outApiEndpoint:
+    Value: !Sub 'https://${Api}.execute-api.${AWS::Region}.amazonaws.com/${apiStage}'
+  outFn:
+    Value: !Ref Fn
