@@ -4,10 +4,13 @@
 
 This repo contains a collection of sample implementations of MCP Servers.  
 
-* **stateless-mcp-on-lambda** - A sample implementation of a remote stateless MCP Server running natively on AWS Lambda and Amazon API Gateway.
-* **stateless-mcp-on-ecs** - A sample implementation of a remote stateless MCP Server running natively on Amazon ECS with Application Load Balancer.
-* **stateful-mcp-on-ecs** - A sample implementation of a remote stateful MCP Server running natively on Amazon ECS with Application Load Balancer.
-* **lambda-ops-mcp-server** - A sample implementation of a local MCP Server that can be used for discovering and upgrading functions on deprecated runtimes.
+| Directory | Runtime | IaC | Description | 
+|---|---|---|---|
+| stateless-mcp-on-lambda | Node.js | Terraform | A sample implementation of a remote stateless MCP Server running natively on AWS Lambda and Amazon API Gateway |
+| stateless-mcp-on-lambda-python | Python | SAM | A sample implementation of a remote stateless MCP Server running natively on AWS Lambda and Amazon API Gateway |
+| stateless-mcp-on-ecs | Node.js | Terraform | A sample implementation of a remote stateless MCP Server running natively on Amazon ECS with Application Load Balancer | 
+| stateful-mcp-on-ecs | Node.js | Terraform | A sample implementation of a remote stateful MCP Server running natively on Amazon ECS with Application Load Balancer | 
+| lambda-ops-mcp-server | Node.js | Terraform | A demo PoC of a local MCP Server that can be used for discovering and upgrading functions on deprecated runtimes |
 
 ## Stateful VS Stateless MCP Servers
 
@@ -27,7 +30,7 @@ That said, it is still possible to scale stateful MCP servers if you're willing 
 
 #### Stateless to the rescue
 
-The MCP specification also allows for a stateless server mode. In this mode, the server doesn’t maintain session context between requests, and clients are not expected to resume dropped connections. Stateless mode enables seamless horizontal scaling and works well in environments where elasticity and load distribution are critical. This model is demonstrated in the `stateless-mcp-on-lambda` and `stateless-mcp-on-ecs` samples included in this repository.
+The MCP specification also allows for a stateless server mode. In this mode, the server doesn’t maintain session context between requests, and clients are not expected to resume dropped connections. Stateless mode enables seamless horizontal scaling and works well in environments where elasticity and load distribution are critical. This model is demonstrated in the `stateless-mcp-on-lambda`, `stateless-mcp-on-ecs`, and `stateless-mcp-on-lambda-python` samples included in this repository.
 
 ![](./stateless-mcp-on-lambda/architecture.png)
 
