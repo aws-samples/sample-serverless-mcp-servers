@@ -1,0 +1,51 @@
+openapi: 3.0.1
+info:
+  title: apigw-mcp
+  description: API Gateway endpoint for MCP server
+  version: 0.1.0
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+
+components:
+  schemas:
+    error:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+  responses:
+    error:
+      description: internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/error"
+          example:
+            code: 500
+            message: "unable to retrieve message"
+
+paths:
+  /echo/mcp:
+    post:
+      summary: echo
+      description: endpoint for mcp server
+      responses:
+        200:
+          description: ok
+        500:
+          $ref: "#/components/responses/error"
+        default:
+          $ref: "#/components/responses/error"
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        payloadFormatVersion: "1.0"
+        responses:
+          default:
+            statusCode: 200
+        type: AWS_PROXY
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${Fn}/invocations"
