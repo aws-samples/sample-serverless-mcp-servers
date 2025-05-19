@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "version": "0.0.12",
+  "version": "0.0.14",
   "author": "Anton Aleksandrov",
   "license": "Apache-2.0",
   "description": "A sample stateless MCP Server running on ECS Fargate",

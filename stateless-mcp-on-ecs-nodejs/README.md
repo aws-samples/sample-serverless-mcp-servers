@@ -15,26 +15,26 @@ This is a sample MCP Server running natively on ECS Fargate and ALB without any 
 
 ```bash
 git clone https://github.com/aws-samples/sample-serverless-mcp-servers.git
-cd sample-serverless-mcp-servers/stateless-mcp-on-ecs
+cd sample-serverless-mcp-servers/stateless-mcp-on-ecs-nodejs
 ```
 
 ### Install dependencies
 
 ```bash
-(cd src/js/mcpclient && npm install)
-(cd src/js/mcpserver && npm install)
+(cd src/mcpclient && npm install)
+(cd src/mcpserver && npm install)
 ```
 
 ### Тest the server locally
 
 ```bash
-node src/js/mcpserver/index.js
+node src/mcpserver/index.js
 ```
 
 Once the server is running, run client in a separate terminal window
 
 ```bash
-node src/js/mcpclient/index.js
+node src/mcpclient/index.js
 ```
 
 ### Build and upload image to ECR
@@ -64,7 +64,7 @@ Deployment takes 3-4 minutes. Once Terraform deployment has completed, it will t
 
 ### Test your remote MCP Server with MCP client:
 ```bash
-node src/js/mcpclient/index.js
+node src/mcpclient/index.js
 ```
 
 Observe the response:
@@ -95,7 +95,7 @@ MCP Server can run in two modes - stateless and stateful. This repo demonstrates
 
 In stateless mode, clients do not establish persistent SSE connections to MCP Server. This means clients will not receive proactive notifications from the server. On the other hand, stateless mode allows you to scale your server horizontally.
 
-If you want to see how to built a stateful MCP Server, that supports persistent SSE connections, see the `stateful-mcp-on-ecs` sample in this repo. 
+If you want to see how to built a stateful MCP Server, that supports persistent SSE connections, see the `stateful-mcp-on-ecs-nodejs` sample in this repo. 
 
 ## HTTPS considerations
 
