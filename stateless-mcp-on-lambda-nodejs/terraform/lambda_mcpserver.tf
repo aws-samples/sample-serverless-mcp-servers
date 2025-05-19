@@ -21,7 +21,7 @@ resource "aws_iam_role_policy_attachment" "mcp_server" {
 
 data "archive_file" "mcp_server" {
   type        = "zip"
-  source_dir  = "${path.root}/../src/js/mcpserver"
+  source_dir  = "${path.root}/../src/mcpserver"
   output_path = "${path.root}/tmp/mcpserver.zip"
 }
 

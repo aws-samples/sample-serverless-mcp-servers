@@ -21,20 +21,20 @@ cd sample-serverless-mcp-servers/stateless-mcp-on-lambda
 ### Install dependencies
 
 ```bash
-(cd src/js/mcpclient && npm install)
-(cd src/js/mcpserver && npm install)
+(cd src/mcpclient && npm install)
+(cd src/mcpserver && npm install)
 ```
 
 ### Тest the server locally
 
 ```bash
-node src/js/mcpserver/index.js
+node src/mcpserver/index.js
 ```
 
 Once the server is running, run client in a separate terminal window
 
 ```bash
-node src/js/mcpclient/index.js
+node src/mcpclient/index.js
 ```
 
 ### Deploy to AWS with Terraform
@@ -54,7 +54,7 @@ Once deployment has completed, it might take about a minute for API Gateway endp
 
 ### Test your remote MCP Server with MCP client:
 ```bash
-node src/js/mcpclient/index.js
+node src/mcpclient/index.js
 ```
 
 Observe the response:
@@ -92,7 +92,7 @@ If you want to see how to built a stateful MCP Server, that supports persistent 
 
 This sample implements simple authorization demo with API Gateway Custom Authorizer. To enable authorization, update the `aws_api_gateway_method` resource in  `terraform/apigateway.tf`, and change authorization to CUSTOM. 
 
-See transport initalization in `src/js/client.js` for how to add a custom authorization header. 
+See transport initalization in `src/client.js` for how to add a custom authorization header. 
 
 ## Cost considerations
 

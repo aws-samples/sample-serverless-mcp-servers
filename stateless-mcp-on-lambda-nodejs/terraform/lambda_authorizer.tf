@@ -21,7 +21,7 @@ resource "aws_iam_role_policy_attachment" "authorizer" {
 
 data "archive_file" "authorizer" {
   type        = "zip"
-  source_dir  = "${path.root}/../src/js/authorizer"
+  source_dir  = "${path.root}/../src/authorizer"
   output_path = "${path.root}/tmp/authorizer.zip"
 }
 
