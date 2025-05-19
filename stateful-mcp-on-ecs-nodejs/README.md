@@ -15,26 +15,26 @@ This is a sample MCP Server running natively on ECS Fargate and ALB without any 
 
 ```bash
 git clone https://github.com/aws-samples/sample-serverless-mcp-servers.git
-cd sample-serverless-mcp-servers/stateful-mcp-on-ecs
+cd sample-serverless-mcp-servers/stateful-mcp-on-ecs-nodejs
 ```
 
 ### Install dependencies
 
 ```bash
-(cd src/js/mcpclient && npm install)
-(cd src/js/mcpserver && npm install)
+(cd src/mcpclient && npm install)
+(cd src/mcpserver && npm install)
 ```
 
 ### Тest the server locally
 
 ```bash
-node src/js/mcpserver/index.js
+node src/mcpserver/index.js
 ```
 
 Once the server is running, run client in a separate terminal window
 
 ```bash
-node src/js/mcpclient/index.js
+node src/mcpclient/index.js
 ```
 
 ### Build and upload image to ECR
@@ -64,7 +64,7 @@ Deployment takes 3-4 minutes. Once Terraform deployment has completed, it will t
 
 ### Test your remote MCP Server with MCP client:
 ```bash
-node src/js/mcpclient/index.js
+node src/mcpclient/index.js
 ```
 
 Observe the response:
@@ -97,7 +97,7 @@ Stateful mode implies a persistent SSE connection established between MCP Client
 
 As of building this sample (early May 2025), the TypeScript implementation of MCP Server SDK does not support externalizing session info, meaning session cannot be synchronized across different server instances. 
 
-It is possible to address this concern by using ALB with cookie-based sticky sessions, which will insure that requests for a session established with a particular task will always be forwarded to the same task. However, MCP Client SDK does not support cookies by default. To address this concern, this sample injects cookie support into `fetch`, the framework MCP Client uses under-the-hood for HTTP communications (see `src/js/mcpclient/index.js`)
+It is possible to address this concern by using ALB with cookie-based sticky sessions, which will insure that requests for a session established with a particular task will always be forwarded to the same task. However, MCP Client SDK does not support cookies by default. To address this concern, this sample injects cookie support into `fetch`, the framework MCP Client uses under-the-hood for HTTP communications (see `src/mcpclient/index.js`)
 
 See more info about this in `terraform/ecs.tf`
 
