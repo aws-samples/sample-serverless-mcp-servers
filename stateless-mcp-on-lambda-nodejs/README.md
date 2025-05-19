@@ -15,7 +15,7 @@ This is a sample MCP Server running natively on AWS Lambda and API Gateway witho
 
 ```bash
 git clone https://github.com/aws-samples/sample-serverless-mcp-servers.git
-cd sample-serverless-mcp-servers/stateless-mcp-on-lambda
+cd sample-serverless-mcp-servers/stateless-mcp-on-lambda-nodejs
 ```
 
 ### Install dependencies
