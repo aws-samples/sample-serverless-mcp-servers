@@ -1,6 +1,6 @@
 # Stateless MCP on AWS Lambda (Python)
 
-This project demonstrates how to deploy a stateless MCP (Message Control Protocol) server on AWS Lambda using Python. The implementation uses AWS API Gateway for HTTP endpoints and AWS Lambda for serverless execution.
+This project demonstrates how to deploy a stateless MCP (Model Context Protocol) server on AWS Lambda using Python. The implementation uses AWS API Gateway for HTTP endpoints and AWS Lambda for serverless execution.
 
 ## Prerequisites
 
