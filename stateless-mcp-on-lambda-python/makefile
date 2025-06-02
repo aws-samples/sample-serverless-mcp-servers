@@ -3,7 +3,7 @@ include etc/environment.sh
 # dependencies
 layer: layer.build layer.package layer.deploy
 layer.build:
-	sam build -t ${LAYER_TEMPLATE} --parameter-overrides ${LAYER_PARAMS} --build-dir build --manifest src/layer/requirements.txt --use-container
+	sam build -t ${LAYER_TEMPLATE} --parameter-overrides ${LAYER_PARAMS} --build-dir build --manifest src/dependencies/requirements.txt --use-container
 layer.package:
 	sam package -t build/template.yaml --region ${REGION} --output-template-file ${LAYER_OUTPUT} --s3-bucket ${BUCKET} --s3-prefix ${LAYER_STACK}
 layer.deploy:
