@@ -1,6 +1,6 @@
 # Stateless MCP on AWS Lambda (Python)
 
-This project demonstrates how to deploy a stateless MCP (Model Context Protocol) server on AWS Lambda using Python. The implementation uses AWS API Gateway for HTTP endpoints and AWS Lambda for serverless execution.
+This project demonstrates how to deploy a stateless MCP (Model Context Protocol) server on AWS Lambda using Python. The implementation uses Amazon API Gateway for HTTP endpoints and AWS Lambda as the serverless compute backend.
 
 ## Prerequisites
 
@@ -55,10 +55,13 @@ Before deploying, you need to configure the environment variables in `etc/enviro
    ```
    This will create the API Gateway and Lambda function, which will have the MCP dependencies layer attached.
 
+   The provided `template.yaml` file assumes a deployment in us-east-1. If deploying to an alternate region, update the ARN for the [Lambda Insights extension](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Lambda-Insights-extension-versions.html) and the [Lambda Web Adapter](https://github.com/awslabs/aws-lambda-web-adapter?tab=readme-ov-file#lambda-functions-packaged-as-zip-package-for-aws-managed-runtimes).
+
 ## Testing
 
 1. After deployment, you'll receive an `outApiEndpoint` value.
-2. Use the MCP Inspector tool to test the endpoint:
+2. Use [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector#py-pi-package) to test the endpoint:
+   - After setting up MCP Inspector, you can start the tool with the following command: `mcp dev src/mcpserver/server.py`
    - Enter the following URL in MCP Inspector: `${outApiEndpoint}/echo/mcp/`
 
 ## Make Commands
@@ -72,4 +75,4 @@ If you encounter any issues:
 1. Ensure all environment variables are properly set in `etc/environment.sh`
 2. Verify AWS credentials are correctly configured
 3. Check AWS CloudWatch logs for Lambda function errors
-4. Ensure the S3 bucket specified in `BUCKET` exists and is accessible
+4. Ensure the S3 bucket specified in `BUCKET` exists, is accessible, and has versioning enabled
