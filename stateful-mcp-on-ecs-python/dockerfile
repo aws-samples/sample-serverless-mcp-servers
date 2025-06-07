@@ -1,0 +1,7 @@
+FROM --platform=linux/amd64 ghcr.io/astral-sh/uv:python3.12-alpine
+WORKDIR /mcp
+COPY ./requirements.txt /mcp/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /mcp/requirements.txt
+COPY ./src /mcp/application
+ENV PYTHONPATH /mcp/application
+CMD ["uv", "run", "/mcp/application/server.py", "--transport", "streamable-http", "--host", "0.0.0.0", "--port", "8000"]

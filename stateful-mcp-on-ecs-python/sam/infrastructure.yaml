@@ -1,0 +1,118 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: MCP infrastructure for Fargate deployment
+Transform: AWS::Serverless-2016-10-31
+Parameters:
+  vpcId:
+    Type: String
+  hostedZoneId:
+    Type: String
+  domainName:
+    Type: String
+  clientIngressCidr:
+    Type: String
+  subnetIds:
+    Type: List<String>
+Resources:
+  # ACM
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref domainName
+      DomainValidationOptions:
+        - DomainName: !Ref domainName
+          HostedZoneId: !Ref hostedZoneId
+      ValidationMethod: DNS
+  # Security Groups
+  AppSGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for ALB
+      VpcId: !Ref vpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: !Ref clientIngressCidr
+  TaskSGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for tasks
+      VpcId: !Ref vpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          SourceSecurityGroupId: !Ref AppSGroup
+  # ALB
+  AppLB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      IpAddressType: ipv4
+      Scheme: internet-facing
+      SecurityGroups:
+        - !Ref AppSGroup
+      Subnets: !Ref subnetIds
+      Type: application
+  AppListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Certificates:
+        - CertificateArn: !Ref Certificate
+      DefaultActions:
+        - Order: 1
+          TargetGroupArn: !Ref AppTargets
+          Type: forward
+      LoadBalancerArn: !Ref AppLB
+      Port: 443
+      Protocol: HTTPS
+  AppTargets:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Matcher:
+        HttpCode: 200,307,401
+      HealthCheckIntervalSeconds: 60
+      HealthCheckPath: "/mcp"
+      HealthCheckPort: 8000
+      HealthCheckProtocol: "HTTP"
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 3
+      Port: 8000
+      Protocol: HTTP
+      TargetGroupAttributes:
+        - Key: stickiness.enabled
+          Value: true
+        - Key: stickiness.type
+          Value: lb_cookie
+        - Key: stickiness.lb_cookie.duration_seconds
+          Value: 86400
+      TargetType: ip
+      VpcId: !Ref vpcId
+  # Route53
+  AppAlias:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref hostedZoneId
+      Name: !Ref domainName
+      ResourceRecords:
+        - !GetAtt AppLB.DNSName
+      TTL: 300
+      Type: CNAME
+  # ECR
+  Repository:
+    Type: AWS::ECR::Repository
+Outputs:
+  outCertificateArn:
+    Value: !Ref Certificate
+  outALBSGroup:
+    Value: !Ref AppSGroup
+  outTaskSGroup:
+    Value: !Ref TaskSGroup
+  outALBArn:
+    Value: !Ref AppLB
+  outALBDNSName:
+    Value: !GetAtt AppLB.DNSName
+  outALBTGroup:
+    Value: !Ref AppTargets
+  outRepository:
+    Value: !Ref Repository
