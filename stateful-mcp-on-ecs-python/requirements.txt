@@ -1,0 +1,5 @@
+fastapi==0.115.12
+langfuse==2.60.7
+mcp==1.9.3
+pydantic==2.11.4
+uvicorn==0.34.2
