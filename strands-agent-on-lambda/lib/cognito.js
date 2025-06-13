@@ -87,6 +87,8 @@ class Cognito extends Construct {
 
         new CfnOutput(this, 'CognitoClientSecret', {
             exportName: 'CognitoClientSecret',
+            // unsafeUnwrap() is used here for brevity and simplicity only. 
+            // Always use Secrets Manager to store your secrets!!!
             value: userPoolClient.userPoolClientSecret.unsafeUnwrap()
         });
 

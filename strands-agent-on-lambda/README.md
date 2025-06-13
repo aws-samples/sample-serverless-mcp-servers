@@ -28,6 +28,7 @@ cd sample-serverless-mcp-servers/strands-agent-on-lambda
 
 ### Deploy to AWS with CDK
 ```bash
+npm install
 cdk deploy
 ```
 Make sure to carefully review required IAM permissions. 
