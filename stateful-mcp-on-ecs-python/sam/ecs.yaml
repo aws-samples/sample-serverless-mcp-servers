@@ -1,0 +1,133 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: MCP resources for ECS Fargate deployment
+Parameters:
+  desiredCount:
+    Type: String
+  albArn:
+    Type: String
+  targetGroupArn:
+    Type: String
+  taskSGroup:
+    Type: String
+  subnetIds:
+    Type: List<String>
+  imageUri:
+    Type: String
+  logGroup:
+    Type: String
+  exampleEnvVar:
+    Type: String
+Resources:
+  ExecRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ecs-tasks.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: '/'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ecs-tasks.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: '/'
+      Policies:
+        - PolicyName: cloudwatch-logs
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - logs:DescribeLogStreams
+                Resource: 'arn:aws:logs:*:*:log-group:*:*'
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      CapacityProviders:
+        - FARGATE
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Ref logGroup
+      RetentionInDays: 7
+  Task:
+    DependsOn: LogGroup
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: mcp-samples
+      ExecutionRoleArn: !GetAtt ExecRole.Arn
+      TaskRoleArn: !GetAtt TaskRole.Arn
+      Cpu: 1024
+      Memory: 2048
+      NetworkMode: awsvpc
+      ContainerDefinitions:
+        - Name: mcp_container
+          Image: !Ref imageUri
+          Environment:
+            - Name: EXAMPLE_ENVVAR
+              Value: !Ref exampleEnvVar
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref logGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: mcp
+          PortMappings:
+            - ContainerPort: 8000
+              Protocol: tcp
+      Tags:
+        - Key: application:group
+          Value: mcp
+        - Key: application:subgroup
+          Value: ecs
+        - Key: application:owner
+          Value: samples
+  Service:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !GetAtt Cluster.Arn
+      DesiredCount: !Ref desiredCount
+      LaunchType: FARGATE
+      LoadBalancers:
+        - ContainerName: mcp_container
+          ContainerPort: 8000
+          TargetGroupArn: !Ref targetGroupArn
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: DISABLED
+          SecurityGroups:
+            - !Ref taskSGroup
+          Subnets: !Ref subnetIds
+      TaskDefinition: !Ref Task
+      Tags:
+        - Key: application:group
+          Value: mcp
+        - Key: application:subgroup
+          Value: ecs
+        - Key: application:owner
+          Value: samples
+Outputs:
+  outCluster:
+    Value: !Ref Cluster
+  outTask:
+    Value: !Ref Task
+  outService:
+    Value: !Ref Service

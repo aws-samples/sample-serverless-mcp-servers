@@ -10,6 +10,7 @@ This repo contains a collection of sample implementations of MCP Servers.
 | [stateless-mcp-on-lambda-python](./stateless-mcp-on-lambda-python) | Python | SAM | A sample implementation of a remote stateless MCP Server running natively on AWS Lambda and Amazon API Gateway |
 | [stateless-mcp-on-ecs-nodejs](./stateless-mcp-on-ecs-nodejs) | Node.js | Terraform | A sample implementation of a remote stateless MCP Server running natively on Amazon ECS with Application Load Balancer | 
 | [stateful-mcp-on-ecs-nodejs](./stateful-mcp-on-ecs-nodejs) | Node.js | Terraform | A sample implementation of a remote stateful MCP Server running natively on Amazon ECS with Application Load Balancer | 
+| [stateful-mcp-on-ecs-python](./stateful-mcp-on-ecs-python) | Python | SAM | A sample implementation of a remote stateful MCP Server running natively on Amazon ECS with Application Load Balancer | 
 | [lambda-ops-mcp-server](./lambda-ops-mcp-server) | Node.js | Terraform | A demo PoC of a local MCP Server that can be used for discovering and upgrading functions on deprecated runtimes |
 
 ## Stateful VS Stateless MCP Servers
