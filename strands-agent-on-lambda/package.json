@@ -1,0 +1,20 @@
+{
+  "name": "strands-agent-on-lambda",
+  "version": "0.1.0",
+  "bin": {
+    "strands-agent-on-lambda": "bin/strands-agent-on-lambda.js"
+  },
+  "scripts": {
+    "build": "echo \"The build step is not required when using JavaScript!\" && exit 0",
+    "cdk": "cdk",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "aws-cdk": "2.1016.1",
+    "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.196.0",
+    "constructs": "^10.0.0"
+  }
+}

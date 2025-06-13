@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "author": "Anton Aleksandrov",
+  "license": "Apache-2.0",
+  "description": "A simple API Gateway authorizer",
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2"
+  }
+}
