@@ -15,6 +15,8 @@ See two below artifacts to better understand the expected Agent behavior.
 * MCP Server is implemented using the [official MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) and [Lambda Web Adapter](https://github.com/awslabs/aws-lambda-web-adapter)
 * [Amazon API Gateway](https://aws.amazon.com/api-gateway/) is used to front AI Agent and MCP (see architecture diagram). 
 * [Amazon DynamoDB](https://aws.amazon.com/dynamodb/) is used to persist AI Agent session state. 
+* [Amazon Bedrock](https://aws.amazon.com/bedrock) and Claude Haiku 3.5 are used for inferrence. 
+* [Gradio](https://www.gradio.app) is used for Web UI. 
 
 ### Authentication and Authorization
 * User authenticaton is handled by [Amazon Cognito](https://aws.amazon.com/cognito/)
