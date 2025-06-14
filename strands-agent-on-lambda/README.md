@@ -2,6 +2,8 @@
 
 This repo contains a sample implementation of user-aware AI Agent and MCP Server running on [AWS Lambda](https://aws.amazon.com/lambda). The sample implements an AI-based Travel Agent for a fictitious corporation AcmeCorp. 
 
+![](./img/travel-ai.gif)
+
 See two below artifacts to better understand the expected Agent behavior. 
 * [./lambdas/travel-agent/agent_builder.py](./lambdas/travel-agent/agent_builder.py) for Agent's system prompt. 
 * [./lambdas/bookings-mcp/tool-get-travel-policies.js](./lambdas/bookings-mcp/tool-get-travel-policies.js) for corporate travel policies the Agent is bound by. 
