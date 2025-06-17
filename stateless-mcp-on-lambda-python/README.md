@@ -63,11 +63,24 @@ Before deploying, you need to configure the environment variables in `etc/enviro
 2. Use [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector#py-pi-package) to test the endpoint:
    - After setting up MCP Inspector, you can start the tool with the following command: `mcp dev src/mcpserver/server.py`
    - Enter the following URL in MCP Inspector: `${outApiEndpoint}/echo/mcp/`
+   - NOTE: The trailing `/` at the end of the URL is important, as the MCP SDK will otherwise do a redirect on the backend.
+      - Without it, MCP Inspector fails with the following error: "Connection Error, is your MCP server running?"
+      - Without it, Postman fails with the following error: "Couldn't run the request: SSE error: Non-200 status code (403)"
 
 ## Make Commands
 
 - `make layer`: Creates the Lambda layer with MCP dependencies
 - `make apigw`: Deploys the API Gateway and Lambda function
+
+## Additional Context
+The `src/mcpserver/server.py` file includes three operating modes:
+1. `--mode stdio` which runs the server using the STDIO transport for local testing
+2. `--mode streamable-http` which runs the server using Streamable HTTP transport, using a FastMCP server
+3. `--mode fastapi` which attaches the FastMCP server to an existing WSGI server, here using a FastAPI server
+
+The latter two modes are similar from a client perspective. The key difference is that when mounting the FastMCP server to a FastAPI server, it does so using a mount, which introduces an additional path component in the URL. For example:
+1. `--mode streamable-http` might produce an endpoint as follows: https://<api-id>.execute-api.<region>.amazonaws.com/dev/mcp/
+2. `--mode fastapi` might produce an endpoint as follows (notice the additional mount point): https://<api-id>.execute-api.<region>.amazonaws.com/dev/mountpoint/mcp/
 
 ## Troubleshooting
 
