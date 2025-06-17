@@ -1,0 +1,5 @@
+fastapi==0.115.12
+pydantic==2.11.4
+strands-agents==0.1.0
+strands-agents-tools==0.1.0
+uvicorn==0.34.2
