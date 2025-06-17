@@ -13,7 +13,7 @@ Resources:
         - python3.12
       ContentUri: src/dependencies
       Description: !Ref description
-      LayerName: mcp-dependencies-python3
+      LayerName: samples-mcp-dependencies-python3
     Metadata:
       BuildMethod: python3.12
       BuildProperties:

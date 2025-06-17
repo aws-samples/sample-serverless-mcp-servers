@@ -14,7 +14,7 @@ Resources:
         - python3.12
       ContentUri: src/layer
       Description: !Ref description
-      LayerName: sample-strands-agents-python3
+      LayerName: samples-strands-agents-python3
     Metadata:
       BuildMethod: python3.12
       BuildProperties:
