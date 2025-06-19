@@ -6,6 +6,8 @@ This repo contains a collection of sample implementations of MCP Servers.
 
 | Directory | Runtime | IaC | Description | 
 |---|---|---|---|
+| [strands-agent-on-lambda](./strands-agent-on-lambda) | Python(Agent) <br> Node.js(MCP) | Terraform, CDK | A sample implementation of AI Agent using Strands Agents SDK and connected MCP Server running on AWS Lambda, includes integration with Cognito for user authentication | 
+| [strands-agent-on-lambda-python](./strands-agent-on-lambda-python) | Python | SAM | A sample implementation of AI Agent using Strands Agents SDK running on AWS Lambda | 
 | [stateless-mcp-on-lambda-nodejs](./stateless-mcp-on-lambda-nodejs) | Node.js | Terraform | A sample implementation of a remote stateless MCP Server running natively on AWS Lambda and Amazon API Gateway |
 | [stateless-mcp-on-lambda-python](./stateless-mcp-on-lambda-python) | Python | SAM | A sample implementation of a remote stateless MCP Server running natively on AWS Lambda and Amazon API Gateway |
 | [stateless-mcp-on-ecs-nodejs](./stateless-mcp-on-ecs-nodejs) | Node.js | Terraform | A sample implementation of a remote stateless MCP Server running natively on Amazon ECS with Application Load Balancer | 

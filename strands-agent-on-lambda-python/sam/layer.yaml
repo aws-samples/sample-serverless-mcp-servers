@@ -1,23 +1,24 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: MCP dependencies for Lambda
+Description: Strands Agents dependencies for Lambda
 Transform: AWS::Serverless-2016-10-31
 Parameters:
   description:
     Type: String
 Resources:
-  LayerMcp:
+  # Dependencies
+  LayerMCP:
     Type: AWS::Serverless::LayerVersion
     Properties:
       CompatibleRuntimes:
         - python3.11
         - python3.12
-      ContentUri: src/dependencies
+      ContentUri: src/layer
       Description: !Ref description
-      LayerName: samples-mcp-dependencies-python3
+      LayerName: samples-strands-agents-python3
     Metadata:
       BuildMethod: python3.12
       BuildProperties:
         UseContainer: true
 Outputs:
   outLayer:
-    Value: !Ref LayerMcp
+    Value: !Ref LayerMCP
