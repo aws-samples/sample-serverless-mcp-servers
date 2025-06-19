@@ -44,7 +44,6 @@ COGNITO_CLIENT_SECRET=$(aws cloudformation describe-stacks \
     --output text)
 echo "COGNITO_CLIENT_SECRET=\"$COGNITO_CLIENT_SECRET\"" >> $DST_FILE_NAME
 
-
 AGENT_ENDPOINT_URL=$(aws cloudformation describe-stacks \
     --stack-name $STACK_NAME \
     --query "Stacks[0].Outputs[?ExportName=='AgentEndpointUrl'].OutputValue" \
@@ -52,43 +51,3 @@ AGENT_ENDPOINT_URL=$(aws cloudformation describe-stacks \
 echo "AGENT_ENDPOINT_URL=\"$AGENT_ENDPOINT_URL\"" >> $DST_FILE_NAME
 
 cat $DST_FILE_NAME
-
-# DASHBOARD_AMPLIFY_APP_ID=$(aws cloudformation describe-stacks \
-#     --stack-name $STACK_NAME \
-#     --query "Stacks[0].Outputs[?ExportName=='$DASHBOARD_AMPLIFY_APP_ID_OUTPUT_KEY'].OutputValue" \
-#     --output text)
-# echo "DASHBOARD_AMPLIFY_APP_ID=$DASHBOARD_AMPLIFY_APP_ID"
-
-# DASHBOARD_AMPLIFY_APP_DOMAIN=$(aws cloudformation describe-stacks \
-#     --stack-name $STACK_NAME \
-#     --query "Stacks[0].Outputs[?ExportName=='$DASHBOARD_AMPLIFY_APP_DOMAIN_OUTPUT_KEY'].OutputValue" \
-#     --output text)
-# echo "DASHBOARD_AMPLIFY_APP_DOMAIN=$DASHBOARD_AMPLIFY_APP_DOMAIN"
-
-# DASHBOARD_AMPLIFY_BRANCH_NAME=$(aws cloudformation describe-stacks \
-#     --stack-name $STACK_NAME \
-#     --query "Stacks[0].Outputs[?ExportName=='$DASHBOARD_AMPLIFY_BRANCH_NAME_OUTPUT_KEY'].OutputValue" \
-#     --output text)
-# echo "DASHBOARD_AMPLIFY_BRANCH_NAME=$DASHBOARD_AMPLIFY_BRANCH_NAME"
-
-# echo "> Storing BACKEND_API_ENDPOINT in $API_ENDPOINT_FILE"
-# echo "const API_ENDPOINT = '$BACKEND_API_ENDPOINT';" > $API_ENDPOINT_FILE
-
-# echo "> Zipping ./web/* to ./tmp/$DASHBOARD_ZIP_FILE_NAME"
-# mkdir -p tmp
-# cd web
-# rm ./../tmp/$DASHBOARD_ZIP_FILE_NAME
-# zip -r ./../tmp/$DASHBOARD_ZIP_FILE_NAME .
-# cd ..
-
-# echo "> Uploading ./../tmp/$DASHBOARD_ZIP_FILE_NAME to S3 bucket=$DASHBOARD_BUCKET_NAME"
-# aws s3 cp ./tmp/$DASHBOARD_ZIP_FILE_NAME s3://$DASHBOARD_BUCKET_NAME/$DASHBOARD_ZIP_FILE_NAME
-
-# echo "> Updating Amplify app=$DASHBOARD_AMPLIFY_APP_ID, branch=$DASHBOARD_AMPLIFY_BRANCH_NAME"
-# aws amplify start-deployment \
-#     --app-id $DASHBOARD_AMPLIFY_APP_ID \
-#     --branch-name $DASHBOARD_AMPLIFY_BRANCH_NAME \
-#     --source-url s3://$DASHBOARD_BUCKET_NAME/$DASHBOARD_ZIP_FILE_NAME \
-#     --no-cli-pager
-
-# echo "> The dashboard is available at https://$DASHBOARD_AMPLIFY_BRANCH_NAME.$DASHBOARD_AMPLIFY_APP_DOMAIN"

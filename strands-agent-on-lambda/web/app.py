@@ -10,6 +10,7 @@ import oauth
 dotenv.load_dotenv()
 
 AGENT_ENDPOINT_URL = os.getenv("AGENT_ENDPOINT_URL")
+print(f"AGENT_ENDPOINT_URL={AGENT_ENDPOINT_URL}")
 user_avatar = "https://cdn-icons-png.flaticon.com/512/149/149071.png"
 bot_avatar = "https://cdn-icons-png.flaticon.com/512/4712/4712042.png"
 
