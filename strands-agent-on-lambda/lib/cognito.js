@@ -1,6 +1,6 @@
 const { Construct } = require('constructs');
 const cognito = require('aws-cdk-lib/aws-cognito');
-const { CfnOutput, RemovalPolicy, Stack } = require('aws-cdk-lib');
+const { CfnOutput, RemovalPolicy, Stack, Fn, Names } = require('aws-cdk-lib');
 
 const REDIRECT_URI = "http://localhost:8000/callback";
 const LOGOUT_URI = "http://localhost:8000/chat";
@@ -10,7 +10,6 @@ class Cognito extends Construct {
         super(scope, id, props);
 
         const userPool = new cognito.UserPool(this, 'UserPool', {
-            userPoolName: 'strands-agent-on-lambda',
             selfSignUpEnabled: false,
             signInAliases: { username: true, email: true },
             removalPolicy: RemovalPolicy.DESTROY
@@ -31,9 +30,13 @@ class Cognito extends Construct {
             }
         });
 
+        const cognitoDomainPrefix = Names.uniqueResourceName(this, {
+            maxLength: 16,
+        }).toLocaleLowerCase()
+
         const userPoolDomain = userPool.addDomain('UserPoolDomain', {
             cognitoDomain: {
-                domainPrefix: 'strands-on-lambda'
+                domainPrefix: `strands-on-lambda-${cognitoDomainPrefix}`
             }
         });
 
