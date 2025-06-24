@@ -5,8 +5,13 @@ locals {
   logout_uri   = "http://localhost:8000/chat"
 }
 
+resource "random_pet" "cognito" {
+  length = 2
+  prefix = "strands-on-lambda"
+}
+
 resource "aws_cognito_user_pool" "user_pool" {
-  name = "strands-agent-on-lambda"
+  name = random_pet.cognito.id
 
   admin_create_user_config {
     allow_admin_create_user_only = true
@@ -29,7 +34,7 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
 }
 
 resource "aws_cognito_user_pool_domain" "user_pool_domain" {
-  domain       = "strands-on-lambda"
+  domain       = random_pet.cognito.id
   user_pool_id = aws_cognito_user_pool.user_pool.id
 }
 
