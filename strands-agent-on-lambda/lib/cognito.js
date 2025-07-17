@@ -1,6 +1,6 @@
 const { Construct } = require('constructs');
 const cognito = require('aws-cdk-lib/aws-cognito');
-const { CfnOutput, RemovalPolicy, Stack, Fn, Names } = require('aws-cdk-lib');
+const { CfnOutput, RemovalPolicy, Stack, Fn, Names, Duration } = require('aws-cdk-lib');
 
 const REDIRECT_URI = "http://localhost:8000/callback";
 const LOGOUT_URI = "http://localhost:8000/chat";
@@ -27,16 +27,15 @@ class Cognito extends Construct {
                 },
                 callbackUrls: [REDIRECT_URI],
                 logoutUrls: [LOGOUT_URI]
-            }
+            },
+            accessTokenValidity: Duration.hours(8),
+            idTokenValidity: Duration.hours(8)
         });
 
-        const cognitoDomainPrefix = Names.uniqueResourceName(this, {
-            maxLength: 16,
-        }).toLocaleLowerCase()
-
+        const userPoolRandomId = Names.uniqueId(userPool).slice(-8).toLowerCase();
         const userPoolDomain = userPool.addDomain('UserPoolDomain', {
             cognitoDomain: {
-                domainPrefix: `strands-on-lambda-${cognitoDomainPrefix}`
+                domainPrefix: `strands-on-lambda-${userPoolRandomId}`
             }
         });
 
@@ -66,7 +65,6 @@ class Cognito extends Construct {
             value: userPool.userPoolId
         });
 
-
         new CfnOutput(this, 'CognitoWellKnownUrl', {
             exportName: 'CognitoWellKnownUrl',
             value: cognitoWellKnownUrl
@@ -81,7 +79,6 @@ class Cognito extends Construct {
             exportName: 'CognitoLogoutUrl',
             value: cognitoLogoutUrl
         });
-
 
         new CfnOutput(this, 'CognitoClientId', {
             exportName: 'CognitoClientId',
