@@ -1,0 +1,15 @@
+{
+  "name": "bookings-mcp",
+  "type": "module",
+  "version": "0.0.1",
+  "author": "Anton Aleksandrov",
+  "license": "Apache-2.0",
+  "description": "Bookings MCP Server",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "log4js": "^6.9.1"
+  },
+  "main": "index.js"
+}

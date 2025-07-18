@@ -1,0 +1,7 @@
+strands-agents==0.1.6
+fastapi==0.115.12
+pydantic==2.11.5
+mcp==1.9.3
+uvicorn==0.34.3
+pyjwt==2.10.1
+cryptography==45.0.4

@@ -1,0 +1,8 @@
+gradio==5.33.2
+boto3==1.38.36
+fastapi==0.115.12
+itsdangerous==2.2.0
+uvicorn==0.34.3
+authlib==1.6.0
+python-dotenv==1.0.1
+PyJWT==2.8.0

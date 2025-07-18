@@ -1,0 +1,18 @@
+Vault OIDC Provider Configuration
+===============================
+
+Vault Address: https://second-cluster-public-vault-e9952e4d.d562c917.z1.hashicorp.cloud:8200
+Namespace: admin
+
+OIDC Client:
+-----------
+Client ID: K1cGecsTj2A95TchCgzuJ3uRfV8xJSiE
+Client Secret: hvo_secret_XjykRWraMi3G9gD0hQZEDFOjGk8WwN6Mn3ApRIpMXP1GASun1bgqypcu1K6nTNqF
+Redirect URI: http://localhost:8080/callback
+
+OIDC Provider:
+------------
+Issuer: https://second-cluster-public-vault-e9952e4d.d562c917.z1.hashicorp.cloud:8200/v1/admin/identity/oidc/provider/vault-provider
+Authorization Endpoint: https://second-cluster-public-vault-e9952e4d.d562c917.z1.hashicorp.cloud:8200/ui/vault/admin/identity/oidc/provider/vault-provider/authorize
+Token Endpoint: https://second-cluster-public-vault-e9952e4d.d562c917.z1.hashicorp.cloud:8200/v1/admin/identity/oidc/provider/vault-provider/token
+JWKS Endpoint: https://second-cluster-public-vault-e9952e4d.d562c917.z1.hashicorp.cloud:8200/v1/admin/identity/oidc/provider/vault-provider/.well-known/keys
