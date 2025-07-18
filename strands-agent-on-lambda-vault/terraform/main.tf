@@ -3,18 +3,18 @@ locals {
   jwt_signature_secret = "jwt-signature-secret"
 }
 
-# Vault OIDC configuration from vault-oidc-config.txt
+# Vault OIDC configuration
 module "vault_oidc" {
   source = "./modules/vault-oidc"
   
-  # Values from vault-oidc-config.txt
-  vault_oidc_client_id     = "K1cGecsTj2A95TchCgzuJ3uRfV8xJSiE"
-  vault_oidc_client_secret = "hvo_secret_XjykRWraMi3G9gD0hQZEDFOjGk8WwN6Mn3ApRIpMXP1GASun1bgqypcu1K6nTNqF"
-  vault_oidc_issuer        = "https://second-cluster-public-vault-e99520000d.d562c917.z1.hashicorp.cloud:8200/v1/admin/identity/oidc/provider/vault-provider"
-  vault_oidc_auth_url      = "https://second-cluster-public-vault-e9952e4d.d562c917.z1.hashicorp.cloud:8200/ui/vault/admin/identity/oidc/provider/vault-provider/authorize"
-  vault_oidc_token_url     = "https://second-cluster-public-vault-e9952e4d.d562c917.z1.hashicorp.cloud:8200/v1/admin/identity/oidc/provider/vault-provider/token"
-  vault_oidc_jwks_url      = "https://second-cluster-public-vault-e9952e4d.d562c917.z1.hashicorp.cloud:8200/v1/admin/identity/oidc/provider/vault-provider/.well-known/keys"
-  vault_oidc_logout_url    = ""  # Not provided in config, can be added if available
+  # Replace these values with your own Vault OIDC configuration
+  vault_oidc_client_id     = "your-vault-oidc-client-id"
+  vault_oidc_client_secret = "your-vault-oidc-client-secret"
+  vault_oidc_issuer        = "https://your-vault-instance/v1/identity/oidc/provider/your-provider"
+  vault_oidc_auth_url      = "https://your-vault-instance/ui/vault/identity/oidc/provider/your-provider/authorize"
+  vault_oidc_token_url     = "https://your-vault-instance/v1/identity/oidc/provider/your-provider/token"
+  vault_oidc_jwks_url      = "https://your-vault-instance/v1/identity/oidc/provider/your-provider/.well-known/keys"
+  vault_oidc_logout_url    = "https://your-vault-instance/ui/vault/logout"  # Optional
 }
 
 module "mcp_server" {
@@ -49,5 +49,3 @@ output "outputs_map" {
   })
   sensitive = true
 }
-
-
