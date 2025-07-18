@@ -1,5 +1,20 @@
 data "aws_region" "current" {}
 
+# S3 bucket for agent state management
+resource "aws_s3_bucket" "agent_state_bucket" {
+  bucket_prefix = "travel-agent-state-"
+  force_destroy = true  # For easy cleanup in demo environments
+}
+
+# S3 bucket versioning for state history
+resource "aws_s3_bucket_versioning" "agent_state_versioning" {
+  bucket = aws_s3_bucket.agent_state_bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+# Keep the DynamoDB table for backward compatibility during migration
 resource "aws_dynamodb_table" "agent_state_table" {
   name         = "travel-agent-on-lambda-state"
   billing_mode = "PAY_PER_REQUEST"
@@ -36,6 +51,7 @@ resource "aws_lambda_function" "travel_agent" {
       MCP_ENDPOINT         = var.mcp_endpoint
       JWT_SIGNATURE_SECRET = var.jwt_signature_secret
       STATE_TABLE_NAME     = aws_dynamodb_table.agent_state_table.name
+      STATE_S3_BUCKET_NAME = aws_s3_bucket.agent_state_bucket.id
       VAULT_OIDC_JWKS_URL  = var.oidc_jwks_url
     }
   }

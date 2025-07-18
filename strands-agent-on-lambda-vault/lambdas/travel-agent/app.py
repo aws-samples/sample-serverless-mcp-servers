@@ -9,16 +9,15 @@ l = logger.get()
 debug_token = "add-your-debug-jwt-here"
 
 JWT_SIGNATURE_SECRET = os.environ['JWT_SIGNATURE_SECRET'] # Used for signing tokens to MCP Servers
-
 VAULT_OIDC_JWKS_URL = os.environ['VAULT_OIDC_JWKS_URL']
+
+# Initialize the JWT client for Vault OIDC
 jwks_client = jwt.PyJWKClient(VAULT_OIDC_JWKS_URL)
 
 def get_jwt_claims(authorization_header):
     jwt_string = authorization_header.split(" ")[1]
-    # print(jwt_string)
     signing_key = jwks_client.get_signing_key_from_jwt(jwt_string)
     claims = jwt.decode(jwt_string, signing_key.key, algorithms=["RS256"], options={"verify_aud": False})
-    # print(claims)
     return claims
 
 def handler(event: dict, ctx):

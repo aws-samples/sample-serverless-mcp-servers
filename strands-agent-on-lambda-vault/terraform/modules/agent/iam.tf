@@ -38,6 +38,31 @@ resource "aws_iam_role_policy_attachment" "travel_agent_lambda_bedrock" {
   policy_arn = aws_iam_policy.travel_agent_lambda_bedrock.arn
 }
 
+resource "aws_iam_policy" "travel_agent_lambda_s3" {
+  name = "travel-agent-lambda-s3-policy"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:ListBucket"
+      ]
+      Effect   = "Allow"
+      Resource = [
+        aws_s3_bucket.agent_state_bucket.arn,
+        "${aws_s3_bucket.agent_state_bucket.arn}/*"
+      ]
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "travel_agent_s3" {
+  role       = aws_iam_role.travel_agent_lambda.name
+  policy_arn = aws_iam_policy.travel_agent_lambda_s3.arn
+}
+
+# Keep the DynamoDB policy for backward compatibility during migration
 resource "aws_iam_policy" "travel_agent_lambda_ddb" {
   name        = "travel-agent-lambda-ddb-policy"
   policy = jsonencode({
@@ -122,4 +147,3 @@ resource "aws_lambda_permission" "invoke_from_api_gateway" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.agent_api.execution_arn}/*/${aws_api_gateway_method.agent_method.http_method}/"
 }
-

@@ -6,15 +6,14 @@ locals {
 # Vault OIDC configuration
 module "vault_oidc" {
   source = "./modules/vault-oidc"
-  
   # Replace these values with your own Vault OIDC configuration
-  vault_oidc_client_id     = "your-vault-oidc-client-id"
-  vault_oidc_client_secret = "your-vault-oidc-client-secret"
-  vault_oidc_issuer        = "https://your-vault-instance/v1/identity/oidc/provider/your-provider"
-  vault_oidc_auth_url      = "https://your-vault-instance/ui/vault/identity/oidc/provider/your-provider/authorize"
-  vault_oidc_token_url     = "https://your-vault-instance/v1/identity/oidc/provider/your-provider/token"
-  vault_oidc_jwks_url      = "https://your-vault-instance/v1/identity/oidc/provider/your-provider/.well-known/keys"
-  vault_oidc_logout_url    = "https://your-vault-instance/ui/vault/logout"  # Optional
+  vault_oidc_client_id     = "your_client_d"
+  vault_oidc_client_secret = "your_client_secret"
+  vault_oidc_issuer        = "https://https://your-vault-instance/v1/identity/oidc/provider/your-provider"
+  vault_oidc_auth_url      = "https://https://your-vault-instance/ui/vault/identity/oidc/provider/your-provider/authorize"
+  vault_oidc_token_url     = "https://https://your-vault-instance/v1/identity/oidc/provider/your-provider/token"
+  vault_oidc_jwks_url      = "https://https://your-vault-instance/v1/identity/oidc/provider/your-provider/.well-known/keys"
+  vault_oidc_logout_url    = "https://https://your-vault-instance/ui/vault/logout"  # Optional
 }
 
 module "mcp_server" {
