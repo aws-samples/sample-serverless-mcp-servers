@@ -16,7 +16,7 @@ See two below artifacts to better understand the expected Agent behavior.
 * AI Agent is implemented using [Strands Agents SDK](https://strandsagents.com/0.1.x/)
 * MCP Server is implemented using the [official MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) and [Lambda Web Adapter](https://github.com/awslabs/aws-lambda-web-adapter)
 * [Amazon API Gateway](https://aws.amazon.com/api-gateway/) is used to front AI Agent and MCP (see architecture diagram). 
-* [Amazon DynamoDB](https://aws.amazon.com/dynamodb/) is used to persist AI Agent session state. 
+* [Amazon S3](https://aws.amazon.com/s3/) is used to persist AI Agent session state. 
 * [Amazon Bedrock](https://aws.amazon.com/bedrock) and Claude Haiku 3.5 are used for inference. 
 * [Gradio](https://www.gradio.app) is used for Web UI. 
 
@@ -30,7 +30,7 @@ See two below artifacts to better understand the expected Agent behavior.
 ### User-awareness and session management
 * Both AI Agent and MCP Server are fully stateless, they do not maintain any internal state. 
 * Both AI Agent and MCP Server are aware of the current user and process requests within the user authorization context.
-* AI Agent externalizes its state to DynamoDB, using `user_id` as primary key. 
+* AI Agent externalizes its state to S3, using `user_id` as session identifier. 
 * New Strands Agent instance is created on every request with state that belongs to the current user. 
 * MCP Clients attached to the AI Agent are created per-user, holding user-specific JWT to communicate with MCP Server. 
 * MCP Server propagates authorized user context into all tools, making MCP tools user-aware. 
