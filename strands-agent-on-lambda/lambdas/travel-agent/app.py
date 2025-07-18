@@ -6,8 +6,6 @@ import os
 from user import User
 l = logger.get()
 
-debug_token = "add-your-debug-jwt-here"
-
 JWT_SIGNATURE_SECRET = os.environ['JWT_SIGNATURE_SECRET'] # Used for signing tokens to MCP Servers
 
 COGNITO_JWKS_URL = os.environ['COGNITO_JWKS_URL']
@@ -52,9 +50,11 @@ def handler(event: dict, ctx):
 
 
 if __name__ == "__main__":
+    debug_token = "your-debug-token"
+
     l.info("in __main__, you're probably testing, right?")
     body = json.dumps({
-        "text": "Can I rent a mercedes?"
+        "text": "Book me a trip to New York"
     })
     event = {
         "requestContext": {

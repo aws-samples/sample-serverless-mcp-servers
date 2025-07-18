@@ -38,28 +38,31 @@ resource "aws_iam_role_policy_attachment" "travel_agent_lambda_bedrock" {
   policy_arn = aws_iam_policy.travel_agent_lambda_bedrock.arn
 }
 
-resource "aws_iam_policy" "travel_agent_lambda_ddb" {
-  name        = "travel-agent-lambda-ddb-policy"
+resource "aws_iam_policy" "travel_agent_lambda_s3" {
+  name        = "travel-agent-lambda-s3-policy"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action   = [
-        "dynamodb:GetItem",
-        "dynamodb:PutItem",
-        "dynamodb:UpdateItem",
-        "dynamodb:DeleteItem",
-        "dynamodb:Query",
-        "dynamodb:Scan"
+      Action = [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
       ]
-      Effect   = "Allow"
-      Resource = aws_dynamodb_table.agent_state_table.arn
+      Effect = "Allow"
+      Resource = "${aws_s3_bucket.agent_session_store.arn}/*"
+    },{
+      Action = [
+        "s3:ListBucket",
+      ],
+      Effect = "Allow"
+      Resource = aws_s3_bucket.agent_session_store.arn
     }]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "travel_agent_dynamodb" {
+resource "aws_iam_role_policy_attachment" "travel_agent_" {
   role       = aws_iam_role.travel_agent_lambda.name
-  policy_arn = aws_iam_policy.travel_agent_lambda_ddb.arn
+  policy_arn = aws_iam_policy.travel_agent_lambda_s3.arn
 }
 
 resource "aws_iam_role" "travel_agent_authorizer_lambda" {

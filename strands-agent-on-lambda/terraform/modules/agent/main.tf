@@ -1,15 +1,10 @@
 data "aws_region" "current" {}
 
-resource "aws_dynamodb_table" "agent_state_table" {
-  name         = "travel-agent-on-lambda-state"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "user_id"
-
-  attribute {
-    name = "user_id"
-    type = "S"
-  }
+resource "aws_s3_bucket" "agent_session_store" {
+  bucket_prefix = "travel-agent-session-store"
+  force_destroy = true
 }
+
 
 data "archive_file" "travel_agent" {
   type        = "zip"
@@ -33,10 +28,10 @@ resource "aws_lambda_function" "travel_agent" {
 
   environment {
     variables = {
-      MCP_ENDPOINT         = var.mcp_endpoint
-      JWT_SIGNATURE_SECRET = var.jwt_signature_secret
-      STATE_TABLE_NAME     = aws_dynamodb_table.agent_state_table.name
-      COGNITO_JWKS_URL     = var.cognito_jwks_url
+      MCP_ENDPOINT              = var.mcp_endpoint
+      JWT_SIGNATURE_SECRET      = var.jwt_signature_secret
+      COGNITO_JWKS_URL          = var.cognito_jwks_url
+      SESSION_STORE_BUCKET_NAME = aws_s3_bucket.agent_session_store.bucket
     }
   }
 }
@@ -101,7 +96,7 @@ resource "aws_api_gateway_integration" "agent_integration" {
 }
 
 resource "aws_api_gateway_deployment" "agent_deployment" {
-  depends_on = [aws_api_gateway_integration.agent_integration]
+  depends_on  = [aws_api_gateway_integration.agent_integration]
   rest_api_id = aws_api_gateway_rest_api.agent_api.id
 
   lifecycle {
@@ -115,6 +110,6 @@ resource "aws_api_gateway_deployment" "agent_deployment" {
 
 resource "aws_api_gateway_stage" "agent_stage" {
   deployment_id = aws_api_gateway_deployment.agent_deployment.id
-  rest_api_id = aws_api_gateway_rest_api.agent_api.id
-  stage_name = "dev"
+  rest_api_id   = aws_api_gateway_rest_api.agent_api.id
+  stage_name    = "dev"
 }

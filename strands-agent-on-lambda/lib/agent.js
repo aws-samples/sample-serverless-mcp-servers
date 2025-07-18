@@ -2,6 +2,7 @@ const iam = require('aws-cdk-lib/aws-iam');
 const lambda = require('aws-cdk-lib/aws-lambda');
 const apigw = require('aws-cdk-lib/aws-apigateway');
 const ddb = require('aws-cdk-lib/aws-dynamodb');
+const s3 = require('aws-cdk-lib/aws-s3');
 const { Duration, RemovalPolicy, CfnOutput } = require('aws-cdk-lib');
 const { Construct } = require('constructs');
 
@@ -9,12 +10,10 @@ class AgentConstruct extends Construct {
     constructor(scope, id, props) {
         super(scope, id, props);
 
-        const agentStateTable = new ddb.Table(this, 'AgentStateTable', {
-            partitionKey: { name: 'user_id', type: ddb.AttributeType.STRING },
-            billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-            tableName: `travel-agent-on-lambda-state`,
-            removalPolicy: RemovalPolicy.DESTROY
-        });
+        const agentSessionStoreBucket = new s3.Bucket(this, 'AgentSessionStore', {
+            removalPolicy: RemovalPolicy.DESTROY,
+            autoDeleteObjects: true
+        });       
 
         const dependenciesLayer = new lambda.LayerVersion(this, 'DependenciesLayer', {
             removalPolicy: RemovalPolicy.DESTROY,
@@ -45,7 +44,7 @@ class AgentConstruct extends Construct {
             environment: {
                 MCP_ENDPOINT: props.mcpEndpoint,
                 JWT_SIGNATURE_SECRET: props.jwtSignatureSecret,
-                STATE_TABLE_NAME: agentStateTable.tableName,
+                SESSION_STORE_BUCKET_NAME: agentSessionStoreBucket.bucketName,
                 COGNITO_JWKS_URL: props.cognitoJwksUrl
             }
         });
@@ -55,7 +54,7 @@ class AgentConstruct extends Construct {
             resources: ['*'],
         }));
 
-        agentStateTable.grantReadWriteData(travelAgentFn);
+        agentSessionStoreBucket.grantReadWrite(travelAgentFn);
 
         const agentApi = new apigw.RestApi(this, 'AgentApi', {
             restApiName: 'travel-agent-api',
