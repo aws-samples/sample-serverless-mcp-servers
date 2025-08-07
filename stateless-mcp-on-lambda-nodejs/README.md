@@ -92,7 +92,7 @@ If you want to see how to built a stateful MCP Server, that supports persistent 
 
 This sample implements simple authorization demo with API Gateway Custom Authorizer. To enable authorization, update the `aws_api_gateway_method` resource in  `terraform/apigateway.tf`, and change authorization to CUSTOM. 
 
-See transport initalization in `src/client.js` for how to add a custom authorization header. 
+See transport initalization in `src/mcpclient/index.js` for how to add a custom authorization header. 
 
 ## Cost considerations
 
