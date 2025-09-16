@@ -47,7 +47,6 @@ Before deploying, you need to configure the environment variables in `etc/enviro
    ```bash
    make layer
    ```
-   After execution, copy the `outLayer` value and update the `O_LAYER_ARN` in `etc/environment.sh`.
 
 2. Deploy the API Gateway and Lambda function:
    ```bash
