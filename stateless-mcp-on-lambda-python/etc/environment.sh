@@ -9,7 +9,7 @@ LAYER_STACK=samples-mcp-lambda-layer
 LAYER_TEMPLATE=sam/layer.yaml
 LAYER_OUTPUT=sam/layer_output.yaml
 LAYER_PARAMS="ParameterKey=description,ParameterValue=${P_DESCRIPTION}"
-O_LAYER_ARN=your-output-layer-arn
+O_LAYER_ARN=will be populated by the script
 
 # api gateway and lambdastack
 P_API_STAGE=dev
