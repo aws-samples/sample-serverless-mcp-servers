@@ -3,5 +3,5 @@ boto3==1.38.36
 fastapi==0.115.12
 itsdangerous==2.2.0
 uvicorn==0.34.3
-authlib==1.6.0
+authlib==1.6.5
 dotenv==0.9.9
