@@ -1,0 +1,213 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: A2A sample with client and server Lambda functions.
+
+Globals:
+  Function:
+    MemorySize: 512
+    Timeout: 60
+    Tracing: Active
+    LoggingConfig:
+      LogFormat: JSON
+    Environment:
+      Variables:
+        SERVER_ENDPOINT_URL: !Ref ServerEndpointUrlName
+  Api:
+    TracingEnabled: true
+
+Parameters:
+  StageName: 
+    Default: dev
+    Type: String
+  ServerEndpointUrlName:
+    Default: /a2a-sync/config/ServerEndpointUrl
+    Type: String
+
+Resources:
+  A2AFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: cloudwatch-insights
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                Resource: '*'
+        - PolicyName: cloudwatch-logs
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - logs:DescribeLogStreams
+                Resource: 'arn:aws:logs:*:*:log-group:*:*'
+        - PolicyName: xray
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - xray:PutTraceSegments
+                  - xray:PutTelemetryRecords
+                  - xray:GetSamplingRules
+                  - xray:GetSamplingTargets
+                  - xray:GetSamplingStatisticSummaries
+                Resource: '*'
+        - PolicyName: bedrock
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - bedrock:InvokeModel*
+                  - bedrock:Converse*
+                  - bedrock:GetInferenceProfile
+                  - bedrock:ListInferenceProfiles
+                  - bedrock:TagResource
+                  - bedrock:UntagResource
+                  - bedrock:ListTagsForResource
+                Resource:
+                  - !Sub arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-sonnet-4-20250514-v1:0
+                  - !Sub arn:aws:bedrock:us-east-2::foundation-model/anthropic.claude-sonnet-4-20250514-v1:0
+                  - !Sub arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-sonnet-4-20250514-v1:0
+                  - !Sub arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/us.anthropic.claude-sonnet-4-20250514-v1:0
+        - PolicyName: parameterstore
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ssm:GetParameter
+                  - ssm:GetParameters
+                  - ssm:GetParametersByPath
+                Resource: 
+                - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter${ServerEndpointUrlName}"
+
+  A2AClientFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/client
+      Handler: client.lambda_handler
+      Runtime: python3.13
+      Role: !GetAtt A2AFunctionRole.Arn
+      Architectures:
+      - arm64
+
+  A2AClientFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${A2AClientFunction}'
+      RetentionInDays: 7
+
+  A2AServerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Architectures:
+      - arm64
+      Layers:
+        - !Sub arn:aws:lambda:${AWS::Region}:753240598075:layer:LambdaAdapterLayerArm64:25
+      CodeUri: src/server
+      Handler: run.sh
+      Runtime: python3.13
+      Role: !GetAtt A2AFunctionRole.Arn
+      Environment:
+        Variables:
+          AWS_LAMBDA_EXEC_WRAPPER: /opt/bootstrap
+          AWS_LWA_READINESS_CHECK_PATH: "/health"
+          AWS_LWA_PORT: 8000
+
+  A2AServerFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${A2AServerFunction}'
+      RetentionInDays: 7
+
+  A2AClientFunctionPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt A2AClientFunction.Arn
+      Principal: apigateway.amazonaws.com
+      Action: lambda:InvokeFunction
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ClientApi}/${StageName}/POST/summary'
+      
+
+  A2AServerFunctionPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt A2AServerFunction.Arn
+      Principal: apigateway.amazonaws.com
+      Action: lambda:InvokeFunction
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ServerApi}/*/*/*'
+
+  ClientApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      AccessLogSetting:
+        DestinationArn: !GetAtt ApiLogGroup.Arn
+        Format: '{ "requestId":"$context.requestId", "ip": "$context.identity.sourceIp", "requestTime":"$context.requestTime", "httpMethod":"$context.httpMethod","routeKey":"$context.routeKey", "status":"$context.status","protocol":"$context.protocol", "responseLength":"$context.responseLength", "auth.status":"$context.authorizer.status", "auth.error":"$context.authorizer.error", "auth.token":"$context.authorizer.token", "auth.reason":"$context.authorizer.reason", "auth.simple":"$context.authorizer.simple", "auth.pversion":"$context.authorizer.pversion" }'
+      StageName: !Ref StageName
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: openapi-client.yaml
+      EndpointConfiguration:
+        Type: REGIONAL
+
+  ServerApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      AccessLogSettings:
+        DestinationArn: !GetAtt ApiLogGroup.Arn
+        Format: '{ "requestId":"$context.requestId", "ip": "$context.identity.sourceIp", "requestTime":"$context.requestTime", "httpMethod":"$context.httpMethod","routeKey":"$context.routeKey", "status":"$context.status","protocol":"$context.protocol", "responseLength":"$context.responseLength", "auth.status":"$context.authorizer.status", "auth.error":"$context.authorizer.error", "auth.token":"$context.authorizer.token", "auth.reason":"$context.authorizer.reason", "auth.simple":"$context.authorizer.simple", "auth.pversion":"$context.authorizer.pversion" }'
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: openapi-server.yaml
+
+  ServerEndpointUrlParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Ref ServerEndpointUrlName
+      Type: String
+      Value: !Sub 'https://${ServerApi}.execute-api.${AWS::Region}.amazonaws.com'
+      Description: "Server Endpoint URL"
+
+  ApiLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/apigateway/apigw-a2a-${ClientApi}"
+      RetentionInDays: 7
+
+  ServerApiLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/apigateway/apigw-a2a-${ServerApi}"
+      RetentionInDays: 7      
+
+Outputs:
+  A2AClientInvokeApiEndpoint:
+    Description: API Gateway endpoint URL for Prod stage for A2AClient function
+    Value: !Sub 'https://${ClientApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/summary/'
+  A2AServerApiEndpoint:
+    Description: API Gateway endpoint URL for Prod stage for A2A Server function
+    Value: !Sub 'https://${ServerApi}.execute-api.${AWS::Region}.amazonaws.com/cities/'
+  A2AClientFunction:
+    Description: A2A Client Lambda Function ARN
+    Value: !GetAtt A2AClientFunction.Arn

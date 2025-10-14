@@ -1,0 +1,6 @@
+boto3
+langchain-aws>=0.2.35
+langgraph-api>= 0.4.9
+a2a-sdk
+a2a-sdk[http-server]
+uvicorn
