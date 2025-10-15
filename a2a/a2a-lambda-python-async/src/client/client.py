@@ -54,20 +54,29 @@ async def send_with_push_notifications(message: str, context_id: str = None):
         async for event in client.send_message(msg):
             results.append(event)
         
-        # return results    
+        return results    
 
 def lambda_handler(event, context):
-    message = event.get('message', 'How much is 100 USD in INR?')    
-    result = asyncio.run(send_with_push_notifications(message))
+    import json
     
-    # return {
-    #     'statusCode': 200,
-    #     'body': {
-    #         'message': 'Request sent with push notifications',
-    #         'result': 'Message sent to server'
-    #     }
-    # }
+    # Parse the message from API Gateway event
+    if 'body' in event:
+        body = json.loads(event['body']) if isinstance(event['body'], str) else event['body']
+        message = body.get('message', 'How much is 100 USD in INR?')
+    else:
+        message = event.get('message', 'How much is 100 USD in INR?')
+    
+    # Send the message asynchronously
+    asyncio.run(send_with_push_notifications(message))
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps({
+            'message': 'Request sent with push notifications',
+            'status': 'Processing asynchronously - check webhook for updates'
+        })
+    }
 
-# if __name__ == '__main__':
-#     asyncio.run(send_with_push_notifications('How much is 100 USD in INR?'))
-#     print("Server invoked")
+if __name__ == '__main__':
+    asyncio.run(send_with_push_notifications('How much is 100 USD in INR?'))
+    print("Server invoked")
