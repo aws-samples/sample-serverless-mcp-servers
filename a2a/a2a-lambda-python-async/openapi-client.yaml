@@ -45,8 +45,6 @@ paths:
       x-amazon-apigateway-integration:
         httpMethod: POST
         payloadFormatVersion: "1.0"
-        requestParameters:
-          integration.request.header.X-Amz-Invocation-Type: "'Event'"
         responses:
           default:
             statusCode: 200

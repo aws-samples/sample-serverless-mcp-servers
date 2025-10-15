@@ -19,7 +19,7 @@ for param in params_response['Parameters']:
         CLIENT_WEBHOOK = param['Value'] 
 
 async def send_with_push_notifications(message: str, context_id: str = None):
-    async with httpx.AsyncClient(timeout=300) as httpx_client:
+    async with httpx.AsyncClient(timeout=DEFAULT_TIMEOUT) as httpx_client:
         # Get agent card
         resolver = A2ACardResolver(
             httpx_client=httpx_client,
