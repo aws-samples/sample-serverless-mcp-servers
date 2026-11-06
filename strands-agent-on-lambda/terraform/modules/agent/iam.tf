@@ -1,6 +1,6 @@
 resource "aws_iam_role" "travel_agent_lambda" {
   name = "travel-agent-lambda-role"
-  
+
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -19,11 +19,11 @@ resource "aws_iam_role_policy_attachment" "travel_agent_lambda_basic" {
 }
 
 resource "aws_iam_policy" "travel_agent_lambda_bedrock" {
-  name        = "travel-agent-lambda-bedrock-policy" 
+  name = "travel-agent-lambda-bedrock-policy"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action   = [
+      Action = [
         "bedrock:InvokeModel",
         "bedrock:InvokeModelWithResponseStream"
       ]
@@ -39,7 +39,7 @@ resource "aws_iam_role_policy_attachment" "travel_agent_lambda_bedrock" {
 }
 
 resource "aws_iam_policy" "travel_agent_lambda_s3" {
-  name        = "travel-agent-lambda-s3-policy"
+  name = "travel-agent-lambda-s3-policy"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -48,13 +48,13 @@ resource "aws_iam_policy" "travel_agent_lambda_s3" {
         "s3:PutObject",
         "s3:DeleteObject"
       ]
-      Effect = "Allow"
+      Effect   = "Allow"
       Resource = "${aws_s3_bucket.agent_session_store.arn}/*"
-    },{
+      }, {
       Action = [
         "s3:ListBucket",
       ],
-      Effect = "Allow"
+      Effect   = "Allow"
       Resource = aws_s3_bucket.agent_session_store.arn
     }]
   })
@@ -63,6 +63,19 @@ resource "aws_iam_policy" "travel_agent_lambda_s3" {
 resource "aws_iam_role_policy_attachment" "travel_agent_" {
   role       = aws_iam_role.travel_agent_lambda.name
   policy_arn = aws_iam_policy.travel_agent_lambda_s3.arn
+}
+
+resource "aws_iam_role_policy" "travel_agent_lambda_read_jwt_signature_secret" {
+  name = "travel-agent-lambda-read-jwt-signature-secret-policy"
+  role = aws_iam_role.travel_agent_lambda.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action   = "secretsmanager:GetSecretValue"
+      Effect   = "Allow"
+      Resource = var.jwt_signature_secret_arn
+    }]
+  })
 }
 
 resource "aws_iam_role" "travel_agent_authorizer_lambda" {

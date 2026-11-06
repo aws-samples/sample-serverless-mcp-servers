@@ -1,29 +1,15 @@
-import jwt from 'jsonwebtoken';
-import jwksClient from 'jwks-rsa';
-import { promisify } from 'util';
-const COGNITO_JWKS_URL = process.env.COGNITO_JWKS_URL;
+import { createRemoteJWKSet, jwtVerify } from 'jose';
 
-const client = jwksClient({
-    jwksUri: COGNITO_JWKS_URL,
-    cache: true
-});
-
-const verifyJwt = promisify(jwt.verify);
-function getKey(header, callback) {
-    // console.log(`>getKey`);
-    client.getSigningKey(header.kid, (err, key) => {
-        if (err) return callback(err);
-        const signingKey = key.getPublicKey();
-        callback(null, signingKey);
-    });
-}
+// Fetches and caches Cognito's public signing keys
+const JWKS = createRemoteJWKSet(new URL(process.env.COGNITO_JWKS_URL));
 
 export const handler = async (event) => {
     const authHeader = event.authorizationToken;
     // console.log({authHeader});
     try {
         const jwtString = authHeader.split(' ')[1];
-        const claims = await verifyJwt(jwtString, getKey, { algorithms: ['RS256'] });
+        // Verifies signature against Cognito JWKS, and validates `exp` claim
+        const { payload: claims } = await jwtVerify(jwtString, JWKS, { algorithms: ['RS256'] });
         // console.log({ claims });
         const principalId = `${claims.sub}|${claims.username}`;
         return generatePolicy('Allow', event.methodArn, principalId);

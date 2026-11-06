@@ -6,10 +6,11 @@
   "license": "Apache-2.0",
   "description": "Bookings MCP Server",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.12.1",
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "log4js": "^6.9.1"
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "log4js": "^6.9.1",
+    "zod": "^4.6.7"
   },
   "main": "index.js"
 }

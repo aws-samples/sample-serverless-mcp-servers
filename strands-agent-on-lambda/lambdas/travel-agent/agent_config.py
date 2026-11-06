@@ -2,7 +2,7 @@ from strands.models import BedrockModel
 
 model = BedrockModel(
     region_name="us-east-1",
-    model_id="us.anthropic.claude-3-5-haiku-20241022-v1:0"
+    model_id="us.anthropic.claude-haiku-5-5"
 )
 
 system_prompt="""You are an enterprise travel agent for AcmeCorp. Your job is to help employees book business travel that complies with company policies. 

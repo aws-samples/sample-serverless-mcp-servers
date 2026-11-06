@@ -37,10 +37,7 @@ def prompt(user: User, composite_prompt: str):
         response_text = agent_response.message["content"][0]["text"]
         return response_text
 
-    except Exception as e:
-
-        l.info(type(e))
-
-        # l.error(e)
-        return 'Failed to initialize MCP Client, see logs'
+    except Exception:
+        l.error("failed to process prompt", exc_info=True)
+        return 'Failed to process your request, see logs'
 

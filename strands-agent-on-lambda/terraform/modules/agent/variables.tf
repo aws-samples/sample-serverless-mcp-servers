@@ -8,8 +8,8 @@ variable "fn_dependecies_layer_arn" {
   type = string
 }
 
-variable "jwt_signature_secret" {
-  description = "Secret used for JWT signature verification"
+variable "jwt_signature_secret_arn" {
+  description = "ARN of the Secrets Manager secret used to sign JWTs sent to the MCP Server"
   type        = string
 }
 

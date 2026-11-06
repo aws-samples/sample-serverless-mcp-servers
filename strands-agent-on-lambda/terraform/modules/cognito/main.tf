@@ -23,11 +23,11 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
   user_pool_id                         = aws_cognito_user_pool.user_pool.id
   generate_secret                      = true
   allowed_oauth_flows_user_pool_client = true
-  allowed_oauth_flows = ["code"]
-  allowed_oauth_scopes = ["email", "openid", "profile"]
-  callback_urls = [local.redirect_uri]
-  logout_urls = [local.logout_uri]
-  supported_identity_providers = ["COGNITO"]
+  allowed_oauth_flows                  = ["code"]
+  allowed_oauth_scopes                 = ["email", "openid", "profile"]
+  callback_urls                        = [local.redirect_uri]
+  logout_urls                          = [local.logout_uri]
+  supported_identity_providers         = ["COGNITO"]
   explicit_auth_flows = [
     "ALLOW_USER_PASSWORD_AUTH"
   ]
@@ -51,8 +51,8 @@ resource "aws_cognito_user" "bob_user" {
 }
 
 locals {
-  cognito_jwks_url       = "https://cognito-idp.${data.aws_region.current.name}.amazonaws.com/${aws_cognito_user_pool.user_pool.id}/.well-known/jwks.json"
-  cognito_well_known_url = "https://cognito-idp.${data.aws_region.current.name}.amazonaws.com/${aws_cognito_user_pool.user_pool.id}/.well-known/openid-configuration"
-  cognito_sign_in_url    = "https://${aws_cognito_user_pool_domain.user_pool_domain.domain}.auth.${data.aws_region.current.name}.amazoncognito.com/login?client_id=${aws_cognito_user_pool_client.user_pool_client.id}&response_type=code&redirect_uri=${local.redirect_uri}"
-  cognito_logout_url     = "https://${aws_cognito_user_pool_domain.user_pool_domain.domain}.auth.${data.aws_region.current.name}.amazoncognito.com/logout?client_id=${aws_cognito_user_pool_client.user_pool_client.id}"
+  cognito_jwks_url       = "https://cognito-idp.${data.aws_region.current.region}.amazonaws.com/${aws_cognito_user_pool.user_pool.id}/.well-known/jwks.json"
+  cognito_well_known_url = "https://cognito-idp.${data.aws_region.current.region}.amazonaws.com/${aws_cognito_user_pool.user_pool.id}/.well-known/openid-configuration"
+  cognito_sign_in_url    = "https://${aws_cognito_user_pool_domain.user_pool_domain.domain}.auth.${data.aws_region.current.region}.amazoncognito.com/login?client_id=${aws_cognito_user_pool_client.user_pool_client.id}&response_type=code&redirect_uri=${local.redirect_uri}"
+  cognito_logout_url     = "https://${aws_cognito_user_pool_domain.user_pool_domain.domain}.auth.${data.aws_region.current.region}.amazoncognito.com/logout?client_id=${aws_cognito_user_pool_client.user_pool_client.id}"
 }

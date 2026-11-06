@@ -6,8 +6,6 @@ import os
 from user import User
 l = logger.get()
 
-JWT_SIGNATURE_SECRET = os.environ['JWT_SIGNATURE_SECRET'] # Used for signing tokens to MCP Servers
-
 COGNITO_JWKS_URL = os.environ['COGNITO_JWKS_URL']
 jwks_client = jwt.PyJWKClient(COGNITO_JWKS_URL)
 

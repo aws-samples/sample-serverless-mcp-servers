@@ -1,8 +1,8 @@
 data "aws_region" "current" {}
 
 locals {
-  lwa_layer_arn_arm64 = "arn:aws:lambda:${data.aws_region.current.name}:753240598075:layer:LambdaAdapterLayerArm64:25"
-  lwa_layer_arn_x86   = "arn:aws:lambda:${data.aws_region.current.name}:753240598075:layer:LambdaAdapterLayerX86:25"
+  lwa_layer_arn_arm64 = "arn:aws:lambda:${data.aws_region.current.region}:753240598075:layer:LambdaAdapterLayerArm64:25"
+  lwa_layer_arn_x86   = "arn:aws:lambda:${data.aws_region.current.region}:753240598075:layer:LambdaAdapterLayerX86:25"
   lwa_layer_arn       = var.fn_architecture == "arm64" ? local.lwa_layer_arn_arm64 : local.lwa_layer_arn_x86
 }
 
@@ -15,7 +15,7 @@ data "archive_file" "bookings_mcp_server" {
 resource "aws_lambda_function" "bookings_mcp_server" {
   function_name    = "bookings-mcp-server"
   architectures    = [var.fn_architecture]
-  runtime          = "nodejs22.x"
+  runtime          = "nodejs24.x"
   handler          = "run.sh"
   timeout          = 10
   memory_size      = 1024
@@ -26,9 +26,9 @@ resource "aws_lambda_function" "bookings_mcp_server" {
 
   environment {
     variables = {
-      AWS_LAMBDA_EXEC_WRAPPER = "/opt/bootstrap"
-      AWS_LWA_PORT            = "3001"
-      JWT_SIGNATURE_SECRET    = var.jwt_signature_secret
+      AWS_LAMBDA_EXEC_WRAPPER  = "/opt/bootstrap"
+      AWS_LWA_PORT             = "3001"
+      JWT_SIGNATURE_SECRET_ARN = aws_secretsmanager_secret_version.jwt_signature_secret.secret_arn
     }
   }
 }
@@ -42,7 +42,7 @@ data "archive_file" "mcp_authorizer" {
 resource "aws_lambda_function" "mcp_authorizer" {
   function_name    = "bookings-mcp-server-authorizer"
   architectures    = [var.fn_architecture]
-  runtime          = "nodejs22.x"
+  runtime          = "nodejs24.x"
   handler          = "index.handler"
   timeout          = 10
   memory_size      = 1024
@@ -51,7 +51,7 @@ resource "aws_lambda_function" "mcp_authorizer" {
   source_code_hash = data.archive_file.mcp_authorizer.output_base64sha256
   environment {
     variables = {
-      JWT_SIGNATURE_SECRET = var.jwt_signature_secret
+      JWT_SIGNATURE_SECRET_ARN = aws_secretsmanager_secret_version.jwt_signature_secret.secret_arn
     }
   }
 }
@@ -104,7 +104,7 @@ resource "aws_lambda_permission" "invoke_from_api_gateway" {
 }
 
 resource "aws_api_gateway_deployment" "mcp_deployment" {
-  depends_on = [aws_api_gateway_integration.mcp_integration]
+  depends_on  = [aws_api_gateway_integration.mcp_integration]
   rest_api_id = aws_api_gateway_rest_api.mcp_api.id
 
   lifecycle {
@@ -118,6 +118,6 @@ resource "aws_api_gateway_deployment" "mcp_deployment" {
 
 resource "aws_api_gateway_stage" "mcp_stage" {
   deployment_id = aws_api_gateway_deployment.mcp_deployment.id
-  rest_api_id = aws_api_gateway_rest_api.mcp_api.id
-  stage_name = "dev"
+  rest_api_id   = aws_api_gateway_rest_api.mcp_api.id
+  stage_name    = "dev"
 }

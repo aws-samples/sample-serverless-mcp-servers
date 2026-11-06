@@ -4,7 +4,19 @@ import express from 'express';
 import transport from './transport.js';
 import packageInfo from './package.json' with { type: 'json'};
 import jwt from 'jsonwebtoken';
-const JWT_SIGNATURE_SECRET = process.env.JWT_SIGNATURE_SECRET || 'jwt-signature-secret';
+import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
+
+// Load the JWT signature secret once, during startup. Fail fast if it's
+// not configured or can't be read - never fall back to a default value.
+const JWT_SIGNATURE_SECRET_ARN = process.env.JWT_SIGNATURE_SECRET_ARN;
+if (!JWT_SIGNATURE_SECRET_ARN) {
+    throw new Error('JWT_SIGNATURE_SECRET_ARN environment variable is not set');
+}
+const { SecretString: JWT_SIGNATURE_SECRET } = await new SecretsManagerClient()
+    .send(new GetSecretValueCommand({ SecretId: JWT_SIGNATURE_SECRET_ARN }));
+if (!JWT_SIGNATURE_SECRET) {
+    throw new Error(`Secret ${JWT_SIGNATURE_SECRET_ARN} has no string value`);
+}
 
 const l = log4js.getLogger();
 const PORT = process.env.AWS_LWA_PORT || process.env.PORT || 3001;
@@ -26,7 +38,8 @@ app.use('/mcp', async (req, res, next) => {
     const authorizationHeader = req.headers['authorization'];
     try {
         const jwtString = authorizationHeader.split(' ')[1];
-        const claims = jwt.verify(jwtString, JWT_SIGNATURE_SECRET);
+        // Also validates `exp` claim
+        const claims = jwt.verify(jwtString, JWT_SIGNATURE_SECRET, { algorithms: ['HS256'] });
         // Inject authorization context into request 
         // object so MCP Server will pick it up automatically
         req.auth = claims;

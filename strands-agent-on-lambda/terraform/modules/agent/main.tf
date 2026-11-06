@@ -29,7 +29,7 @@ resource "aws_lambda_function" "travel_agent" {
   environment {
     variables = {
       MCP_ENDPOINT              = var.mcp_endpoint
-      JWT_SIGNATURE_SECRET      = var.jwt_signature_secret
+      JWT_SIGNATURE_SECRET_ARN  = var.jwt_signature_secret_arn
       COGNITO_JWKS_URL          = var.cognito_jwks_url
       SESSION_STORE_BUCKET_NAME = aws_s3_bucket.agent_session_store.bucket
     }
@@ -45,7 +45,7 @@ data "archive_file" "agent_authorizer" {
 resource "aws_lambda_function" "agent_authorizer" {
   function_name = "travel-agent-authorizer"
   architectures = [var.fn_architecture]
-  runtime       = "nodejs22.x"
+  runtime       = "nodejs24.x"
   handler       = "index.handler"
   timeout       = 10
   memory_size   = 1024
