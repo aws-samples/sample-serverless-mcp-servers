@@ -33,7 +33,7 @@ Before deploying, you need to configure the environment variables in `etc/enviro
    - `REGION`: AWS region (default: us-east-1)
 
 2. MCP Dependencies:
-   - `P_DESCRIPTION`: MCP package version (default: "mcp==1.8.0")
+   - `P_DESCRIPTION`: MCP package version (default: "mcp==1.30.0")
    - `O_LAYER_ARN`: This will be updated after creating the Lambda layer
 
 3. API Gateway and Lambda Configuration:
@@ -62,10 +62,9 @@ Before deploying, you need to configure the environment variables in `etc/enviro
 1. After deployment, you'll receive an `outApiEndpoint` value.
 2. Use [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector#py-pi-package) to test the endpoint:
    - After setting up MCP Inspector, you can start the tool with the following command: `mcp dev src/mcpserver/server.py`
-   - Enter the following URL in MCP Inspector: `${outApiEndpoint}/echo/mcp/`
-   - NOTE: The trailing `/` at the end of the URL is important, as the MCP SDK will otherwise do a redirect on the backend.
-      - Without it, MCP Inspector fails with the following error: "Connection Error, is your MCP server running?"
-      - Without it, Postman fails with the following error: "Couldn't run the request: SSE error: Non-200 status code (403)"
+   - Enter the following URL in MCP Inspector: `${outApiEndpoint}/echo/mcp`
+   - NOTE: Do not add a trailing `/` at the end of the URL, as the MCP SDK will otherwise do a redirect on the backend.
+      - The redirect drops the API Gateway stage from the URL, so the client fails with a 403 error.
 
 ## Make Commands
 
@@ -79,8 +78,8 @@ The `src/mcpserver/server.py` file includes three operating modes:
 3. `--mode fastapi` which attaches the FastMCP server to an existing WSGI server, here using a FastAPI server
 
 The latter two modes are similar from a client perspective. The key difference is that when mounting the FastMCP server to a FastAPI server, it does so using a mount, which introduces an additional path component in the URL. For example:
-1. `--mode streamable-http` might produce an endpoint as follows: https://<api-id>.execute-api.<region>.amazonaws.com/dev/mcp/
-2. `--mode fastapi` might produce an endpoint as follows (notice the additional mount point): https://<api-id>.execute-api.<region>.amazonaws.com/dev/mountpoint/mcp/
+1. `--mode streamable-http` might produce an endpoint as follows: https://<api-id>.execute-api.<region>.amazonaws.com/dev/mcp
+2. `--mode fastapi` might produce an endpoint as follows (notice the additional mount point): https://<api-id>.execute-api.<region>.amazonaws.com/dev/mountpoint/mcp
 
 ## Troubleshooting
 

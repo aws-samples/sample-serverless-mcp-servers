@@ -4,7 +4,7 @@ BUCKET=your-cli-bucket
 REGION=us-east-1
 
 # mcp dependencies
-P_DESCRIPTION="mcp==1.8.0"
+P_DESCRIPTION="mcp==1.30.0"
 LAYER_STACK=samples-mcp-lambda-layer
 LAYER_TEMPLATE=sam/layer.yaml
 LAYER_OUTPUT=sam/layer_output.yaml
