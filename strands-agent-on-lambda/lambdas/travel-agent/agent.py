@@ -34,7 +34,8 @@ def prompt(user: User, composite_prompt: str):
 
         )
         agent_response = agent(composite_prompt)
-        response_text = agent_response.message["content"][0]["text"]
+        # The response may start with a reasoningContent block, so pick the first text block
+        response_text = next(block["text"] for block in agent_response.message["content"] if "text" in block)
         return response_text
 
     except Exception:
