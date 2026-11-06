@@ -71,7 +71,7 @@ Resources:
       Matcher:
         HttpCode: 200,307,401
       HealthCheckIntervalSeconds: 60
-      HealthCheckPath: "/mcp"
+      HealthCheckPath: "/mcp/"
       HealthCheckPort: 8000
       HealthCheckProtocol: "HTTP"
       HealthCheckTimeoutSeconds: 5

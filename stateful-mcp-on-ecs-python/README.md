@@ -100,6 +100,6 @@ When deploying new versions of the container:
 
 ## Testing
 
-When connecting to your MCP server on Fargate with MCP Inspector, be sure to connect using the following URL: `https://<your.domain.com>/mcp/`
+When connecting to your MCP server on Fargate with MCP Inspector, be sure to connect using the following URL: `https://<your.domain.com>/mcp`
 
-Note that the trailing `/` is important when connecting, as the FastMCP server will perform a 307 redirect without it.
+Note that there should be no trailing `/` when connecting, as the FastMCP server will perform a 307 redirect from `/mcp/` to `/mcp`.
