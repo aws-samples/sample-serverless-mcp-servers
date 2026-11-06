@@ -38,7 +38,7 @@ Before deploying, you need to configure the environment variables in `etc/enviro
 
 3. API Gateway and Lambda Configuration:
    - `P_API_STAGE`: API Gateway stage name (default: dev)
-   - `P_FN_MEMORY`: Lambda function memory in MB (default: 128)
+   - `P_FN_MEMORY`: Lambda function memory in MB (default: 512)
    - `P_FN_TIMEOUT`: Lambda function timeout in seconds (default: 15)
 
 ## Deployment Steps

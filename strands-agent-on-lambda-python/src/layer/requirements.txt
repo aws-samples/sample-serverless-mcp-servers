@@ -1,5 +1,7 @@
-fastapi==0.115.12
+fastapi==0.133.0
+pillow==13.0.0
 pydantic==2.11.4
-strands-agents==0.1.0
-strands-agents-tools==0.1.0
+starlette==1.3.1
+strands-agents==1.48.0
+strands-agents-tools==0.8.11
 uvicorn==0.34.2

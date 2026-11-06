@@ -6,6 +6,9 @@ from strands_tools import http_request
 
 app = FastAPI(title="Weather API")
 
+# Amazon Bedrock model (cross-region inference profile); must match the IAM policy in sam/template.yaml
+MODEL_ID = "us.anthropic.claude-haiku-5-5"
+
 # define a weather-focused system prompt
 WEATHER_SYSTEM_PROMPT = """You are a weather assistant with HTTP capabilities. You can:
 
@@ -42,6 +45,7 @@ async def get_weather(request: PromptRequest):
 
     try:
         weather_agent = Agent(
+            model=MODEL_ID,
             system_prompt=WEATHER_SYSTEM_PROMPT,
             tools=[http_request],
         )
@@ -61,6 +65,7 @@ async def run_weather_agent_and_stream_response(prompt: str):
         return "Ok - continue providing the summary!"
 
     weather_agent = Agent(
+        model=MODEL_ID,
         system_prompt=WEATHER_SYSTEM_PROMPT,
         tools=[http_request, ready_to_summarize],
         callback_handler=None

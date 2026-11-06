@@ -95,12 +95,12 @@ Resources:
                 Action:
                   - bedrock:InvokeModelWithResponseStream
                 Resource:
-                  - 'arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-7-sonnet-20250219-v1:0'
-                  - 'arn:aws:bedrock:us-east-2::foundation-model/anthropic.claude-3-7-sonnet-20250219-v1:0'
-                  - 'arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-3-7-sonnet-20250219-v1:0'
-                  - !Sub 'arn:aws:bedrock:us-east-1:${AWS::AccountId}:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0'
-                  - !Sub 'arn:aws:bedrock:us-east-2:${AWS::AccountId}:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0'
-                  - !Sub 'arn:aws:bedrock:us-west-2:${AWS::AccountId}:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0'
+                  - 'arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-haiku-5-5'
+                  - 'arn:aws:bedrock:us-east-2::foundation-model/anthropic.claude-haiku-5-5'
+                  - 'arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-haiku-5-5'
+                  - !Sub 'arn:aws:bedrock:us-east-1:${AWS::AccountId}:inference-profile/us.anthropic.claude-haiku-5-5'
+                  - !Sub 'arn:aws:bedrock:us-east-2:${AWS::AccountId}:inference-profile/us.anthropic.claude-haiku-5-5'
+                  - !Sub 'arn:aws:bedrock:us-west-2:${AWS::AccountId}:inference-profile/us.anthropic.claude-haiku-5-5'
   Fn:
     Type: AWS::Serverless::Function
     Properties:
