@@ -1,6 +1,6 @@
 # AI Agent with MCP Server on AWS Lambda
 
-This repo contains a sample implementation of user-aware AI Agent and MCP Server running on [AWS Lambda](https://aws.amazon.com/lambda). The sample implements an AI-based Travel Agent for a fictitious corporation AcmeCorp.
+This repo contains a sample implementation of user-aware AI Agent and MCP Server running on [AWS Lambda](https://aws.amazon.com/lambda). The sample implements an AI-based Travel Agent for a fictitious corporation AcmeCorp. This is a sample, not production grade code. 
 
 ![](./img/travel-ai.gif)
 
