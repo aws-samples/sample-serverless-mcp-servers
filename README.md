@@ -2,7 +2,7 @@
 
 ![](logo.png)
 
-This repo contains a collection of sample implementations of MCP Servers.  
+This repo contains a collection of sample implementations of MCP Servers.  These are samples, not production grade code. 
 
 | Directory | Runtime | IaC | Description | 
 |---|---|---|---|
